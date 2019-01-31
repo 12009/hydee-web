@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyAccountDao" >
+    <!-- 配置二级缓存 -->
+    <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="BaseResultMap" type="companyAccount" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="available_balance" property="availableBalance" jdbcType="DOUBLE" />
+  </resultMap>
+
+  <resultMap id="accountMap" type="companyAccount" >
+    <result column="dayTaskCount" property="dayTaskCount" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, customer_id, available_balance
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_account
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByCustomerId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_account
+    where customer_id = #{customer_id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ct_company_account
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="companyAccount" >
+    insert into ct_company_account (id, customer_id, available_balance
+      )
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=VARCHAR}, #{availableBalance,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="companyAccount" >
+    insert into ct_company_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="availableBalance != null" >
+        available_balance,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="availableBalance != null" >
+        #{availableBalance,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="companyAccount" >
+    update ct_company_account
+    <set >
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="availableBalance != null" >
+        available_balance = #{availableBalance,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="companyAccount" >
+    update ct_company_account
+    set customer_id = #{customerId,jdbcType=VARCHAR},
+      available_balance = #{availableBalance,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 正在进行任务 -->
+  <select id="getTaskDoingAccount" resultType="java.lang.Integer" parameterType="java.lang.String">
+    SELECT
+    count(1)
+    FROM
+    (
+    SELECT
+    CASE
+    WHEN ctt. STATUS = 2
+    AND ctt.residue_money = 0
+    AND (
+    SELECT
+    count(1)
+    FROM
+    ct_company_train_task_lock_money lockM
+    WHERE
+    lockM.task_id = ctt.task_id
+    AND (
+    lockM.lock_money IS NULL
+    OR lockM. STATUS = 1
+    )
+    ) = 0 THEN
+    4
+    WHEN ctt. STATUS = 2
+    AND ctt.start_time &lt; SYSDATE()
+    AND ctt.end_time > SYSDATE() THEN
+    3
+    WHEN ctt. STATUS = 2
+    AND ctt.end_time &lt; SYSDATE() THEN
+    4
+    WHEN ctt. STATUS = 1 THEN
+    1
+    ELSE
+    2
+    END AS STATUS
+    FROM
+    ct_company_train_task ctt
+    WHERE
+    ctt.customer_id = #{customerId}
+    ) s
+    WHERE
+    s. STATUS = 3;
+
+  </select>
+
+
+  <!-- 汇总30天参加任务人数数据 -->
+  <select id="queryMonthTaskByCustomer" parameterType="java.util.Map" resultMap="accountMap">
+
+    SELECT
+	IFNULL(b.click_qty, '') AS dayTaskCount
+    FROM
+	(
+		SELECT
+			date_sub(curdate(), INTERVAL 1 DAY) AS click_date
+		UNION ALL
+			SELECT
+				date_sub(curdate(), INTERVAL 2 DAY) AS click_date
+			UNION ALL
+				SELECT
+					date_sub(curdate(), INTERVAL 3 DAY) AS click_date
+				UNION ALL
+					SELECT
+						date_sub(curdate(), INTERVAL 4 DAY) AS click_date
+					UNION ALL
+						SELECT
+							date_sub(curdate(), INTERVAL 5 DAY) AS click_date
+						UNION ALL
+							SELECT
+								date_sub(curdate(), INTERVAL 6 DAY) AS click_date
+							UNION ALL
+								SELECT
+									date_sub(curdate(), INTERVAL 7 DAY) AS click_date
+								UNION ALL
+									SELECT
+										date_sub(curdate(), INTERVAL 8 DAY) AS click_date
+									UNION ALL
+										SELECT
+											date_sub(curdate(), INTERVAL 9 DAY) AS click_date
+										UNION ALL
+											SELECT
+												date_sub(curdate(), INTERVAL 10 DAY) AS click_date
+											UNION ALL
+												SELECT
+													date_sub(curdate(), INTERVAL 11 DAY) AS click_date
+												UNION ALL
+													SELECT
+														date_sub(curdate(), INTERVAL 12 DAY) AS click_date
+													UNION ALL
+														SELECT
+															date_sub(curdate(), INTERVAL 13 DAY) AS click_date
+														UNION ALL
+															SELECT
+																date_sub(curdate(), INTERVAL 14 DAY) AS click_date
+															UNION ALL
+																SELECT
+																	date_sub(curdate(), INTERVAL 15 DAY) AS click_date
+																UNION ALL
+																	SELECT
+																		date_sub(curdate(), INTERVAL 16 DAY) AS click_date
+																	UNION ALL
+																		SELECT
+																			date_sub(curdate(), INTERVAL 17 DAY) AS click_date
+																		UNION ALL
+																			SELECT
+																				date_sub(curdate(), INTERVAL 18 DAY) AS click_date
+																			UNION ALL
+																				SELECT
+																					date_sub(curdate(), INTERVAL 19 DAY) AS click_date
+																				UNION ALL
+																					SELECT
+																						date_sub(curdate(), INTERVAL 20 DAY) AS click_date
+																					UNION ALL
+																						SELECT
+																							date_sub(curdate(), INTERVAL 21 DAY) AS click_date
+																						UNION ALL
+																							SELECT
+																								date_sub(curdate(), INTERVAL 22 DAY) AS click_date
+																							UNION ALL
+																								SELECT
+																									date_sub(curdate(), INTERVAL 23 DAY) AS click_date
+																								UNION ALL
+																									SELECT
+																										date_sub(curdate(), INTERVAL 24 DAY) AS click_date
+																									UNION ALL
+																										SELECT
+																											date_sub(curdate(), INTERVAL 25 DAY) AS click_date
+																										UNION ALL
+																											SELECT
+																												date_sub(curdate(), INTERVAL 26 DAY) AS click_date
+																											UNION ALL
+																												SELECT
+																													date_sub(curdate(), INTERVAL 27 DAY) AS click_date
+																												UNION ALL
+																													SELECT
+																														date_sub(curdate(), INTERVAL 28 DAY) AS click_date
+																													UNION ALL
+																														SELECT
+																															date_sub(curdate(), INTERVAL 29 DAY) AS click_date
+																														UNION ALL
+																															SELECT
+																																date_sub(curdate(), INTERVAL 30 DAY) AS click_date
+      ) a
+  LEFT JOIN (
+      SELECT
+          count(1) AS click_qty,
+          date_format(
+              cUser.create_time,
+              '%Y-%m-%d'
+          ) AS fTime
+      FROM
+          ct_company_train_task ctask
+      INNER JOIN ct_company_train_task_user cUser ON ctask.task_id = cUser.task_id
+      WHERE
+          cUser.create_time BETWEEN date_sub(
+              date_format(SYSDATE(), '%Y-%m-%d'),
+              INTERVAL 1 MONTH
+          )
+      AND date_format(SYSDATE(), '%Y-%m-%d')
+      <if test="customerId != null and customerId != '' ">
+        AND ctask.customer_id = #{customerId}
+      </if>
+      GROUP BY
+          date_format(
+              cUser.create_time,
+              '%Y-%m-%d'
+          ) DESC
+  ) b ON a.click_date = b.fTime
+  GROUP BY
+      a.click_date
+  </select>
+</mapper>

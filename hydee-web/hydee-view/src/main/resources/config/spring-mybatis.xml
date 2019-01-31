@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://www.springframework.org/schema/tx
+       					http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        http://www.springframework.org/schema/aop
+  						http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+	<!-- 自动扫描 -->
+	<context:component-scan base-package="com.hydee" />
+	<!-- 引入配置文件 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<!--<property name="location" value="classpath:jdbc.properties" />-->
+        <property name="order" value="2" />
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:redis.properties</value>
+            </list>
+        </property>
+	</bean>
+	
+	<bean id="abstractXADataSource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean" init-method="init"  
+          destroy-method="close" abstract="true">  
+        <property name="xaDataSourceClassName" value="com.mysql.jdbc.Driver"/>  
+        <property name="poolSize" value="10" />  
+        <property name="minPoolSize" value="10"/>  
+        <property name="maxPoolSize" value="30"/>  
+        <property name="borrowConnectionTimeout" value="60"/>  
+        <property name="reapTimeout" value="2000"/>  
+        <!-- 最大空闲时间 -->  
+        <property name="maxIdleTime" value="60"/>  
+        <property name="maintenanceInterval" value="60"/>  
+        <property name="loginTimeout" value="60"/>  
+        <property name="testQuery">  
+            <value>select 1</value>  
+        </property>  
+    </bean>  
+	
+	<bean id="qadataSource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean">  
+        <!-- value只要两个数据源不同就行，随便取名 -->  
+        <property name="uniqueResourceName" value="dlDB" />  
+        <property name="driverClassName">  
+            <value>${mysql.driver}</value>  
+        </property>  
+        <property name="url">  
+            <value>${mysql.url}</value>  
+        </property>  
+        <property name="user">  
+            <value>${mysql.username}</value>  
+        </property>  
+        <property name="password">  
+            <value>${mysql.password}</value>  
+        </property>  
+    </bean>  
+  
+    <bean id="devdataSource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean">  
+        <!-- value只要两个数据源不同就行，随便取名 -->  
+        <property name="uniqueResourceName" value="nyxsDB" />  
+       <property name="driverClassName">  
+            <value>${jdbc.driver}</value>  
+        </property>  
+        <property name="url">  
+            <value>${jdbc.url}</value>  
+        </property>  
+        <property name="user">  
+            <value>${jdbc.username}</value>  
+        </property>  
+        <property name="password">  
+            <value>${jdbc.password}</value>  
+        </property>  
+    </bean>  
+    
+    <bean id="sqldataSource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean">  
+        <!-- value只要两个数据源不同就行，随便取名 -->  
+        <property name="uniqueResourceName" value="SQLDB" />  
+       <property name="driverClassName">  
+            <value>${sqlserver.driver}</value>  
+        </property>  
+        <property name="url">  
+            <value>${sqlserver.url}</value>  
+        </property>  
+        <property name="user">  
+            <value>${sqlserver.username}</value>  
+        </property>  
+        <property name="password">  
+            <value>${sqlserver.password}</value>  
+        </property>  
+    </bean>
+    <!-- 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		初始化连接大小
+		<property name="initialSize" value="${jdbc.initialSize}"></property>
+		连接池最大数量
+		<property name="maxActive" value="${jdbc.maxActive}"></property>
+		连接池最大空闲
+		<property name="maxIdle" value="${jdbc.maxIdle}"></property>
+		连接池最小空闲
+		<property name="minIdle" value="${jdbc.minIdle}"></property>
+		获取连接最大等待时间
+		<property name="maxWait" value="${jdbc.maxWait}"></property>
+	</bean>
+ -->
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref="sqlSessionFactory" />
+    </bean>
+
+    <!-- 数据源1配置 spring和MyBatis完美整合，不需要mybatis的配置映射文件    -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="devdataSource" />
+        <property name="configLocation" value="classpath:/conf/devData/mybatis-devDateConfig.xml"/>
+		<!-- 自动扫描mapping.xml文件 -->
+		<property name="mapperLocations" value="classpath:mapper/*/devData/*.xml"></property>
+	</bean>
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="annotationClass" value="org.springframework.stereotype.Repository" />
+		<property name="basePackage" value="com.hydee.*.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	
+	
+	<!-- 数据源2配置 spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	<bean id="qasqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="qadataSource" />
+        <property name="configLocation" value="classpath:/conf/qaData/mybatis-qaDateConfig.xml" />
+		<!-- 自动扫描mapping.xml文件 -->
+		<property name="mapperLocations" value="classpath:mapper/*/qaData/*.xml"></property>
+	</bean>
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.hydee.*.qaDao" />
+		<property name="sqlSessionFactoryBeanName" value="qasqlSessionFactory"></property>
+	</bean>
+
+	<!-- 数据源3配置 spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	<bean id="serversqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="sqldataSource" />
+        <property name="configLocation" value="classpath:/conf/sqlData/mybatis-sqlDateConfig.xml" />
+		<!-- 自动扫描mapping.xml文件 -->
+		<property name="mapperLocations" value="classpath:mapper/*/sqlData/*.xml"></property>
+	</bean>
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.hydee.*.sqlDao" />
+		<property name="sqlSessionFactoryBeanName" value="serversqlSessionFactory"></property>
+	</bean>
+
+	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="devdataSource" />
+		<!--
+		<property name="dataSource" ref="qadataSource" />
+		<property name="dataSource" ref="sqldataSource" />
+		 -->
+	</bean>
+
+	<!-- 事务控制   -->  
+    <tx:annotation-driven transaction-manager="transactionManager" />  
+	
+	<!-- 事务 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="query*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="load*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="list*" propagation="REQUIRED" read-only="true"/>
+			<tx:method name="search*" propagation="REQUIRED" read-only="true"/> -->
+			<!-- 如果设置read-only="true"，在记录操作日志的时候会报异常 -->
+			<tx:method name="*" propagation="REQUIRED" read-only="false"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut id="myPointcut" expression="execution(* com.hydee.*.service..*.*(..))" />
+		<!-- 事务控制 -->
+		<aop:advisor id="myAdvisor" pointcut-ref="myPointcut" advice-ref="txAdvice" order="1"/>
+	</aop:config>
+
+    <!-- redis配置START -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <property name="maxTotal" value="${redis.maxActive}" />
+        <property name="maxWaitMillis" value="${redis.maxWait}" />
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+        <property name="testOnReturn" value="${redis.testOnReturn}"/>
+        <!-- <property name="testWhileIdle" value="true"/> -->
+    </bean>
+
+    <!-- redis&mabtis 配置 START -->
+    <!-- Spring-redis连接池管理工厂 -->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+          p:host-name="${redis.host}"
+          p:port="${redis.port}"
+          p:password="${redis.pass}"
+          p:pool-config-ref="jedisPoolConfig"/>
+
+    <!-- 使用中间类解决RedisCache.jedisConnectionFactory的静态注入，从而使MyBatis实现第三方缓存 -->
+    <bean id="redisCacheTransfer" class="com.hydee.hdsec.RedisCacheTransfer">
+        <property name="jedisConnectionFactory" ref="jedisConnectionFactory"/>
+    </bean>
+</beans>

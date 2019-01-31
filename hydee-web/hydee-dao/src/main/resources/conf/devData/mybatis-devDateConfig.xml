@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<settings> 
+        <setting name="cacheEnabled" value="true" /><!-- 全局映射器启用缓存 -->   
+        <setting name="useGeneratedKeys" value="true" /> 
+        <setting name="defaultExecutorType" value="REUSE" /> 
+    </settings>
+
+	<typeAliases>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyBtn" alias="companyBtn"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyMenu" alias="companyMenu"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyOrganization" alias="companyOrganization"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyRole" alias="companyRole"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyRoleresop" alias="companyRoleresop"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyUser" alias="companyUser"/>
+		<typeAlias type="com.hydee.hdsec.entity.OperationLog" alias="operationLog"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainClass" alias="companyTrainClass"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainExercises" alias="companyTrainExercises"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainClassExercises" alias="companyTrainClassExercises"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainExercisesOptions" alias="companyTrainExercisesOptions"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyAccount" alias="companyAccount"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyAccountRecharge" alias="companyAccountRecharge"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyAccountWhere" alias="companyAccountWhere"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyDict" alias="companyDict"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainTask" alias="companyTrainTask"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainClassTask" alias="companyTrainClassTask"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainTaskComment" alias="companyTrainTaskComment"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainTaskCustomer" alias="companyTrainTaskCustomer"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainTaskThumbnail" alias="companyTrainTaskThumbnail"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainTaskUser" alias="companyTrainTaskUser"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyWithdrawal" alias="companyWithdrawal"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainTaskLockMoney" alias="companyTrainTaskLockMoney"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyBindBank" alias="companyBindBank"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyUserAccount" alias="companyUserAccount"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainErrorOption" alias="companyTrainErrorOption"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyTrainTaskLike" alias="companyTrainTaskLike"/>
+		<typeAlias type="com.hydee.hdsec.entity.CompanyCustomerAccount" alias="companyCustomerAccount"/>
+		<typeAlias type="com.hydee.hdsec.entity.Share" alias="share"/>
+		<typeAlias type="com.hydee.hdsec.entity.ShareComment" alias="shareComment"/>
+		<typeAlias type="com.hydee.hdsec.entity.ShareImg" alias="shareImg"/>
+		<typeAlias type="com.hydee.hdsec.entity.ShareLiker" alias="shareLiker"/>
+
+
+
+		<typeAlias type="com.hydee.hdsec.entity.IPAddress" alias="iPAddress"/>
+
+		<!--&lt;!&ndash; 分页 &ndash;&gt;-->
+		<typeAlias type="com.hydee.hdsec.entity.Page" alias="Page"/>
+	</typeAliases>
+	
+	<plugins>
+		<plugin interceptor="com.hydee.hdsec.dao.base.plugin.PagePlugin">
+			<property name="dialect" value="mysql"/>
+			<property name="pageSqlId" value=".*[lL]istPage$"/>
+		</plugin>
+	</plugins>
+	
+</configuration>

@@ -1,0 +1,205 @@
+*{
+    margin:0px;
+    padding:0px;
+}
+li{
+    list-style:none;
+}
+img{
+    border:none;
+}
+body{
+    background-color: #f2f2f2;
+}
+body,body a{
+    font-size:12px;
+    color:#333;
+}
+em{
+    font-style:normal;
+}
+a,a:link,a:visited,a:hover,a:active{
+    text-decoration: none;
+}
+h1,h2,h3,h4,h5,h6,ul{
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+label{
+    margin-bottom: 0;
+    font-weight: normal;
+}
+.clear {
+    clear: both;
+}
+
+
+.header{
+    width: 980px;
+    margin: 0 auto;
+}
+.header-left{
+    float: left;
+    height: 140px;
+}
+.header-left a{
+    float: left;
+    display: inline-block;
+    margin-top: 27px;
+}
+.header-left span{
+    float: left;
+    font-size: 22px;
+    margin-left: 25px;
+    margin-top: 70px;
+    display: inline-block;
+    color: #333;
+}
+.header-right{
+    float: right;
+    height: 140px;
+    line-height: 140px;
+    font-size: 16px;
+}
+.main{
+    width: 980px;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+.pic-left{
+    float: left;
+    padding: 60px 0;
+    width: 50%;
+    text-align: right;
+}
+.pic-left img{
+    border: medium none;
+    vertical-align: middle;
+}
+.login{
+    width: 50%;
+    float: right;
+}
+.passwod{
+    width: 460px;
+    margin: 0 auto;
+}
+.nc-login{
+    padding: 0 20px 20px 20px;;
+    width: 420px;
+    background: #ffffff;
+    overflow: hidden;
+}
+.red{
+    background-color: #cf2d54;
+}
+.login-name{
+    background-color: #ffffff;
+    height: 60px;
+}
+.login-name p{
+    line-height: 60px;
+    font-size: 24px;
+    font-family: '微软雅黑';
+    font-weight: 500;
+    text-align: center;
+    color: #cc2d53;
+}
+.login-main{
+    padding-left: 20px;
+    padding-top: 20px;
+}
+.login-main p{
+    height: 50px;
+    line-height: 50px;
+}
+.login-input{
+    width: 350px;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid #8c1533;
+    border-radius: 6px;
+    background-color: #8c1533;
+    color: #df295a;
+    padding: 0 15px;
+}
+.login-checkbox{
+    vertical-align: middle;
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+}
+.login-main p span,.login-main p a{
+    color: #800e27;
+}
+.login-button{
+    width: 380px;
+    height: 40px;
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    color: #c1335b;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "微软雅黑";
+    cursor: pointer;
+}
+.login-main p a.span-right{
+    float: right;
+    margin-right: 20px;
+    color: #ffffff;
+}
+.passwod-main{
+    width: 880px;
+    margin: 0 auto;
+}
+.progress-item{
+    height: 38px;
+    float: left;
+    line-height: 38px;
+}
+.first-radius,.progress-next,.last-radius,.progress-next01{
+    background: url("../image/xz.png") no-repeat;
+}
+.first-radius{
+    float: left;
+    width: 4px;
+    height: 38px;
+    background-position: 0 0;
+}
+.progress-txt{
+    width: 275px;
+    float: left;
+    line-height: 38px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    text-align: center;
+}
+.progress-next,.progress-next01{
+    background-position: -4px 0;
+    float: left;
+    width: 23px;
+    height: 38px;
+}
+.last-radius{
+    float: left;
+    width: 4px;
+    height: 38px;
+    background-position: -27px 0;
+}
+.activ .first-radius{
+    background-position: 0 -48px;
+}
+.activ .progress-txt{
+    background-color: #e81347;
+    color: #fff;
+}
+.activ .progress-next{
+    background-position: -4px -48px;
+}
+.activ .progress-next01{
+    background-position: -27px -48px;
+}
+.activ .last-radius{
+    background-position: -53px -48px;
+}

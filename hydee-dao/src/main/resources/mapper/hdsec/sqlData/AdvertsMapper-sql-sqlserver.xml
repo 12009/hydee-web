@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.hydee.hdsec.sqlDao.AdvertsDao">
+	<!-- APP广告页数据库配置 -->
+	<resultMap type="appAdvert" id="appAdvertRm">
+		<result property="id" jdbcType="INTEGER" column="id" />
+		<result property="companyName" jdbcType="VARCHAR" column="company_name"/>
+		<result property="imgUrl" jdbcType="VARCHAR" column="img_url"/>
+		<result property="advertUrl" jdbcType="VARCHAR" column="advert_url"/>
+		<result property="startTime" jdbcType="TIMESTAMP" column="start_time"/>
+		<result property="playStartTime" jdbcType="VARCHAR" column="play_start_time"/>
+		<result property="endTime" jdbcType="TIMESTAMP" column="end_time"/>
+		<result property="playEndTime" jdbcType="VARCHAR" column="play_end_time"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="adStatus" jdbcType="INTEGER" column="status" />
+		<result property="remark" jdbcType="VARCHAR" column="remark" />
+		<result property="publisherName" jdbcType="VARCHAR" column="publisher_name" />
+		<result property="region" jdbcType="VARCHAR" column="region" />
+		<result property="city" jdbcType="VARCHAR" column="city" />
+		<result property="duration" jdbcType="INTEGER" column="duration" />
+		<!-- 2.2版本新增列 -->
+		<result property="advertName" jdbcType="VARCHAR" column="advert_name" />
+		<result property="companyId" jdbcType="VARCHAR" column="company_id" />
+		<result property="advertType" jdbcType="INTEGER" column="advert_type" />
+	</resultMap>
+
+	<resultMap type="appAdvert" id="appAdvertDetailRm" extends="appAdvertRm">
+		<association property="visitCount" select="com.hydee.hdsec.sqlDao.AdvertsDao.selectAdvertVisitCount" column="id"></association>
+		<association property="clickCount" select="com.hydee.hdsec.sqlDao.AdvertsDao.selectAdvertClickCount" column="id"></association>
+		<collection property="customerList" select="com.hydee.hdsec.sqlDao.AdvertsDao.listAdvertCustomerByAdid" column="id" ></collection>
+	</resultMap>
+
+	<resultMap type="appAdvertCustomer" id="appAdvertCustomRm">
+		<result property="id" jdbcType="INTEGER" column="id" />
+		<result property="customerId" jdbcType="VARCHAR" column="customer_id" />
+		<result property="customerName" jdbcType="VARCHAR" column="customer_name" />
+		<result property="advertId" jdbcType="INTEGER" column="advert_id" />
+	</resultMap>
+
+	<sql id="AppAdvert_Base_Column_List">
+		id,img_url,advert_url,company_name,start_time,play_start_time,end_time,play_end_time,create_time,publisher_name,
+		status,remark,region,city,duration,advert_name,company_id,advert_type,visit_count,click_count
+	</sql>
+
+	<sql id="selectWhere">
+		<where>
+			<if test = "companyId != null ">
+				and company_id = #{companyId}
+			</if>
+		</where>
+	</sql>
+
+	<select id="advertsListServerPage" parameterType="appAdvert" resultMap="appAdvertDetailRm">
+		select <include refid="AppAdvert_Base_Column_List"/>,row_number() over (order by create_time desc) AS rowId
+		from u_app_advert <include refid="selectWhere"/>
+	</select>
+
+	<select id="listAdvertCustomerByAdid" parameterType="Integer" resultMap="appAdvertCustomRm">
+		select id, customer_id, customer_name, advert_id from u_app_advert_customer where advert_id = #{id}
+	</select>
+
+	<select id="countAdvertDatasListServerPage" parameterType="appAdvert" resultType="appAdvert">
+		<choose>
+			<when test="advertType == 0">
+				select region as region, city as city, SUM(dis_cnt) as totalDisCnt, SUM(clik_cnt) as totalClkCnt,
+				SUM(case when accdate = CONVERT(varchar(10),getdate()-1,120) then dis_cnt else 0 end ) as ystDisCnt,
+				SUM(case when accdate = CONVERT(varchar(10),getdate()-1,120) then clik_cnt else 0 end ) as ystClkCnt,
+				row_number() over (order by region asc) AS rowId
+				from t_rpt_advert_detail
+				where advert_id = #{id}
+				group by region,city
+			</when>
+			<otherwise>
+				select a.customer_id as customerId, c.company_name as companyName, SUM(dis_cnt) as totalDisCnt, SUM(clik_cnt) as totalClkCnt,
+				SUM(case when accdate = CONVERT(varchar(10),getdate()-1,120) then dis_cnt else 0 end ) as ystDisCnt,
+				SUM(case when accdate = CONVERT(varchar(10),getdate()-1,120) then clik_cnt else 0 end ) as ystClkCnt,
+				row_number() over (order by a.customer_id asc) AS rowId
+				from t_rpt_advert_detail a
+				left join c_company c on a.customer_id = c.customer_id
+				where advert_id = #{id}
+				group by a.customer_id,c.company_name
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="selectAdvertVisitCount" parameterType="int" resultType="int">
+		select sum(dis_cnt) from t_rpt_advert_detail where advert_id = #{id}
+	</select>
+
+	<select id="selectAdvertClickCount" parameterType="int" resultType="int">
+		select sum(clik_cnt) from t_rpt_advert_detail where advert_id = #{id}
+	</select>
+</mapper>
+

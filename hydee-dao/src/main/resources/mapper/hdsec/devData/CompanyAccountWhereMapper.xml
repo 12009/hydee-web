@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyAccountWhereDao" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="BaseResultMap" type="companyAccountWhere" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="dict_id" property="dictId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="red_money" property="redMoney" jdbcType="DOUBLE" />
+    <result column="serve_charge" property="serveCharge" jdbcType="DOUBLE" />
+    <result column="server_divided" property="serverDivided" jdbcType="DOUBLE" />
+    <result column="train_fund" property="trainFund" jdbcType="DOUBLE" />
+    <result column="fund_divided" property="fundDivided" jdbcType="DOUBLE" />
+    <result column="correct" property="correct" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="advertising" property="advertising" jdbcType="DOUBLE" />
+    <result column="favorable" property="favorable" jdbcType="DOUBLE" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="chain_customer_id" property="chainCustomerId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <resultMap id="BaseResultMap2" type="companyAccountWhere" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="dict_id" property="dictId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="red_money" property="redMoney" jdbcType="DOUBLE" />
+    <result column="serve_charge" property="serveCharge" jdbcType="DOUBLE" />
+    <result column="server_divided" property="serverDivided" jdbcType="DOUBLE" />
+    <result column="train_fund" property="trainFund" jdbcType="DOUBLE" />
+    <result column="fund_divided" property="fundDivided" jdbcType="DOUBLE" />
+    <result column="correct" property="correct" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="advertising" property="advertising" jdbcType="DOUBLE" />
+    <result column="favorable" property="favorable" jdbcType="DOUBLE" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+     <result column="chain_customer_id" property="chainCustomerId" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="dict_name" property="dictName" jdbcType="VARCHAR" />
+    <result column="red_money_count" property="redMoneyCount" jdbcType="DOUBLE" />
+    <result column="serve_charge_count" property="serveChargeCount" jdbcType="DOUBLE" />
+    <result column="train_fund_count" property="trainFundCount" jdbcType="DOUBLE" />
+  </resultMap>
+
+  <resultMap id="exportAccountWhere" type="companyAccountWhere" extends="BaseResultMap2">
+    <result column="taskCreateTime" property="taskCreateTime" jdbcType="TIMESTAMP" />
+    <result column="moneyReward" property="moneyReward" jdbcType="DOUBLE" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    id, task_id, dict_id, user_id, user_name, customer_id, customer_name, red_money, 
+    serve_charge, server_divided, train_fund, fund_divided, correct, create_time, phone, 
+    serial_number, type, advertising, favorable, name,chain_customer_id
+  </sql>
+
+  <select id="queryAccountWhere2ListPage" resultMap="BaseResultMap2" parameterType="companyAccountWhere" >
+    SELECT
+    accountWhere.id,
+    accountWhere.task_id,
+    accountWhere.dict_id,
+    accountWhere.user_id,
+    accountWhere.user_name,
+    accountWhere.customer_id,
+    accountWhere.customer_name,
+    accountWhere.red_money,
+    accountWhere.serve_charge,
+    accountWhere.server_divided,
+    accountWhere.train_fund,
+    accountWhere.fund_divided,
+    accountWhere.correct,
+    accountWhere.create_time,
+    accountWhere.phone,
+    accountWhere.serial_number,
+    accountWhere.type,
+    accountWhere.advertising,
+    accountWhere.favorable,
+    accountWhere.`name`,
+    accountWhere.chain_customer_id,
+    <if test="isCount != null and isCount == 1 ">
+      SUM(accountWhere.red_money) AS red_money_count ,
+      SUM(accountWhere.serve_charge) AS serve_charge_count,
+      SUM(accountWhere.train_fund) AS train_fund_count ,
+    </if>
+    trainTask.title,
+    dict.dict_name
+
+    FROM
+    ct_company_account_where AS accountWhere
+    LEFT JOIN ct_company_train_task AS trainTask ON accountWhere.task_id = trainTask.task_id
+    INNER JOIN ct_company_dict AS dict ON accountWhere.dict_id = dict.dict_id
+    LEFT JOIN ct_company_user AS users ON accountWhere.user_id = users.id
+    LEFT JOIN ct_company_organization AS org ON trainTask.customer_id = org.customer_id
+    <where>
+      1=1
+      <if test="title != null and title!='' ">
+        and trainTask.title LIKE '%${title}%'
+      </if>
+      <if test="dictId != null and dictId != -1 ">
+        and accountWhere.dict_id = #{dictId,jdbcType=BIGINT}
+      </if>
+      <if test="pStartTime != null and pStartTime!='' and pEndTime != null and pEndTime != '' ">
+        and (accountWhere.create_time<![CDATA[>=]]> '${pStartTime}' and accountWhere.create_time<![CDATA[<]]>'${pEndTime}')
+      </if>
+      <if test="userId != null and userId != ''">
+        and accountWhere.user_id =  #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="customerId != null and customerId != ''">
+        and accountWhere.customer_id =  #{customerId,jdbcType=VARCHAR}
+      </if>
+      <if test="customerName != null and customerName != ''">
+        and accountWhere.customer_name LIKE '%${customerName}%'
+      </if>
+      <if test="chainCustomerId != null and chainCustomerId != ''">
+        and accountWhere.chain_customer_id = #{chainCustomerId}
+      </if>
+      <if test="keywords != null and keywords != ''">
+        and trainTask.title LIKE '%${keywords}%'
+      </if>
+      <if test="startTime_c != null and startTime_c != ''">
+        and accountWhere.create_time &gt; #{startTime_c}
+      </if>
+      <if test="endTime_c != null and  endTime_c != ''">
+        and accountWhere.create_time &lt; #{endTime_c}
+      </if>
+      and org.xm_customer_id is  null
+    </where>
+    <if test="isCount != null and isCount ==1 ">
+      GROUP BY accountWhere.dict_id ,accountWhere.task_id
+    </if>
+    order by accountWhere.create_time desc
+  </select>
+
+  <select id="queryAccountWhere" resultMap="exportAccountWhere" parameterType="companyAccountWhere" >
+    SELECT
+    accountWhere.id,
+    accountWhere.task_id,
+    accountWhere.dict_id,
+    accountWhere.user_id,
+    accountWhere.user_name,
+    accountWhere.customer_id,
+    accountWhere.customer_name,
+    accountWhere.red_money,
+    accountWhere.serve_charge,
+    accountWhere.server_divided,
+    accountWhere.train_fund,
+    accountWhere.fund_divided,
+    accountWhere.correct,
+    accountWhere.create_time,
+    accountWhere.phone,
+    accountWhere.serial_number,
+    accountWhere.type,
+    accountWhere.advertising,
+    accountWhere.favorable,
+    accountWhere.`name`,
+    accountWhere.chain_customer_id,
+    <if test="isCount != null and isCount == 1 ">
+      SUM(accountWhere.red_money) AS red_money_count ,
+      SUM(accountWhere.serve_charge) AS serve_charge_count,
+      SUM(accountWhere.train_fund) AS train_fund_count ,
+    </if>
+    trainTask.title,
+    trainTask.create_time as taskCreateTime,
+    trainTask.money_reward as moneyReward,
+    dict.dict_name
+
+    FROM
+    ct_company_account_where AS accountWhere
+    LEFT JOIN ct_company_train_task AS trainTask ON accountWhere.task_id = trainTask.task_id
+    INNER JOIN ct_company_dict AS dict ON accountWhere.dict_id = dict.dict_id
+    LEFT JOIN ct_company_user AS users ON accountWhere.user_id = users.id
+    LEFT JOIN ct_company_organization AS org ON trainTask.customer_id = org.customer_id
+    <where>
+      1=1
+      <if test="title != null and title!='' ">
+        and trainTask.title LIKE '%${title}%'
+      </if>
+      <if test="dictId != null and dictId != -1 ">
+        and accountWhere.dict_id = #{dictId,jdbcType=BIGINT}
+      </if>
+      <if test="pStartTime != null and pStartTime!='' and pEndTime != null and pEndTime != '' ">
+        and (accountWhere.create_time<![CDATA[>=]]> '${pStartTime}' and accountWhere.create_time<![CDATA[<]]>'${pEndTime}')
+      </if>
+      <if test="userId != null and userId != ''">
+        and accountWhere.user_id =  #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="customerId != null and customerId != ''">
+        and accountWhere.customer_id =  #{customerId,jdbcType=VARCHAR}
+      </if>
+      <if test="customerName != null and customerName != ''">
+        and accountWhere.customer_name LIKE '%${customerName}%'
+      </if>
+      <if test="chainCustomerId != null and chainCustomerId != ''">
+        and accountWhere.chain_customer_id = #{chainCustomerId}
+      </if>
+      <if test="keywords != null and keywords != ''">
+        and trainTask.title LIKE '%${keywords}%'
+      </if>
+      <if test="startTime_c != null and startTime_c != ''">
+        and accountWhere.create_time &gt; #{startTime_c}
+      </if>
+      <if test="endTime_c != null and  endTime_c != ''">
+        and accountWhere.create_time &lt; #{endTime_c}
+      </if>
+    </where>
+    <if test="isCount != null and isCount ==1 ">
+      GROUP BY accountWhere.dict_id ,accountWhere.task_id
+    </if>
+    order by accountWhere.create_time desc
+  </select>
+  
+  <select id="queryAccountWhereListPage" resultMap="BaseResultMap2" parameterType="companyAccountWhere" >
+	SELECT
+	accountWhere.id,
+	accountWhere.task_id,
+	accountWhere.dict_id,
+	accountWhere.user_id,
+	accountWhere.user_name,
+	accountWhere.customer_id,
+	accountWhere.customer_name,
+	accountWhere.red_money,
+	accountWhere.serve_charge,
+	accountWhere.server_divided,
+	accountWhere.train_fund,
+	accountWhere.fund_divided,
+	accountWhere.correct,
+	accountWhere.create_time,
+	accountWhere.phone,
+	accountWhere.serial_number,
+	accountWhere.type,
+	accountWhere.advertising,
+	accountWhere.favorable,
+	accountWhere.`name`,
+	accountWhere.chain_customer_id,
+	<if test="isCount != null and isCount == 1 ">
+    SUM(accountWhere.red_money) AS red_money_count ,
+	SUM(accountWhere.serve_charge) AS serve_charge_count,
+	SUM(accountWhere.train_fund) AS train_fund_count ,
+    </if>
+    trainTask.title,
+    dict.dict_name
+
+	FROM
+	ct_company_account_where AS accountWhere
+	LEFT JOIN ct_company_train_task AS trainTask ON accountWhere.task_id = trainTask.task_id
+	INNER JOIN ct_company_dict AS dict ON accountWhere.dict_id = dict.dict_id
+	LEFT JOIN ct_company_user AS users ON accountWhere.user_id = users.id
+	<where>
+		1=1
+        <if test="taskId != null">
+          and trainTask.task_id = #{taskId}
+        </if>
+		<if test="title != null and title!='' ">
+		and trainTask.title LIKE '%${title}%'
+		</if>
+		<if test="dictId != null and dictId != -1 ">
+		and accountWhere.dict_id = #{dictId,jdbcType=BIGINT}
+		</if>
+	 	<if test="pStartTime != null and pStartTime!='' and pEndTime != null and pEndTime != '' ">
+	    and (accountWhere.create_time<![CDATA[>=]]> '${pStartTime}' and accountWhere.create_time<![CDATA[<]]>'${pEndTime}')
+	    </if>
+		<if test="userId != null and userId != ''">
+	    and accountWhere.user_id =  #{userId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="customerId != null and customerId != ''">
+	    and accountWhere.customer_id =  #{customerId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="customerName != null and customerName != ''">
+	    and accountWhere.customer_name LIKE '%${customerName}%'
+	    </if>
+	    <if test="chainCustomerId != null and chainCustomerId != ''">
+	    and accountWhere.chain_customer_id = #{chainCustomerId}
+	    </if>
+	    <if test="keywords != null and keywords != ''">
+	    and trainTask.title LIKE '%${keywords}%'
+	    </if>
+    	<if test="startTime_c != null and startTime_c != ''">
+    	and accountWhere.create_time &gt; #{startTime_c}
+    	</if>
+    	<if test="endTime_c != null and  endTime_c != ''">
+    	and accountWhere.create_time &lt; #{endTime_c}
+    	</if>
+    </where>
+    <if test="isCount != null and isCount ==1 ">
+    GROUP BY accountWhere.dict_id ,accountWhere.task_id
+    </if>
+    order by accountWhere.create_time desc
+  </select>
+  
+  <select id="getSerialNumber" resultType="string">
+    select GetSerialNumber('PX')
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_account_where
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ct_company_account_where
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="companyAccountWhere" >
+    insert into ct_company_account_where (id, task_id, dict_id, 
+      user_id, user_name, customer_id, 
+      customer_name, red_money, serve_charge, 
+      server_divided, train_fund, fund_divided, 
+      correct, create_time, phone, 
+      serial_number, type, advertising, 
+      favorable, name,chain_customer_id)
+    values (#{id,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, #{dictId,jdbcType=BIGINT}, 
+      #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR}, 
+      #{customerName,jdbcType=VARCHAR}, #{redMoney,jdbcType=DOUBLE}, #{serveCharge,jdbcType=DOUBLE}, 
+      #{serverDivided,jdbcType=DOUBLE}, #{trainFund,jdbcType=DOUBLE}, #{fundDivided,jdbcType=DOUBLE}, 
+      #{correct,jdbcType=DOUBLE}, #{createTime,jdbcType=TIMESTAMP}, #{phone,jdbcType=VARCHAR}, 
+      #{serialNumber,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{advertising,jdbcType=DOUBLE}, 
+      #{favorable,jdbcType=DOUBLE}, #{name,jdbcType=VARCHAR},#{chainCustomerId,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="companyAccountWhere" >
+    insert into ct_company_account_where
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="dictId != null" >
+        dict_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="customerName != null" >
+        customer_name,
+      </if>
+      <if test="redMoney != null and (dictId == 3 or dictId == 4)" >
+        red_money,
+      </if>
+      <if test="serveCharge != null and dictId == 2" >
+        serve_charge,
+      </if>
+      <if test="serverDivided != null" >
+        server_divided,
+      </if>
+      <if test="trainFund != null and dictId == 1" >
+        train_fund,
+      </if>
+      <if test="fundDivided != null" >
+        fund_divided,
+      </if>
+      <if test="correct != null" >
+        correct,
+      </if>
+        create_time,
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="serialNumber != null" >
+        serial_number,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="advertising != null" >
+        advertising,
+      </if>
+      <if test="favorable != null" >
+        favorable,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="chainCustomerId != null" >
+        chain_customer_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="dictId != null" >
+        #{dictId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="redMoney != null and (dictId == 3 or dictId == 4)" >
+        #{redMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="serveCharge != null and dictId == 2" >
+        #{serveCharge,jdbcType=DOUBLE},
+      </if>
+      <if test="serverDivided != null" >
+        #{serverDivided,jdbcType=DOUBLE},
+      </if>
+      <if test="trainFund != null and dictId == 1" >
+        #{trainFund,jdbcType=DOUBLE},
+      </if>
+      <if test="fundDivided != null" >
+        #{fundDivided,jdbcType=DOUBLE},
+      </if>
+      <if test="correct != null" >
+        #{correct,jdbcType=DOUBLE},
+      </if>
+      sysdate(),
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null" >
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="advertising != null" >
+        #{advertising,jdbcType=DOUBLE},
+      </if>
+      <if test="favorable != null" >
+        #{favorable,jdbcType=DOUBLE},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="chainCustomerId != null" >
+        #{chainCustomerId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="companyAccountWhere" >
+    update ct_company_account_where
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="dictId != null" >
+        dict_id = #{dictId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="redMoney != null and dictId == 3 and dictId == 4" >
+        red_money = #{redMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="serveCharge != null and dictId == 2" >
+        serve_charge = #{serveCharge,jdbcType=DOUBLE},
+      </if>
+      <if test="serverDivided != null" >
+        server_divided = #{serverDivided,jdbcType=DOUBLE},
+      </if>
+      <if test="trainFund != null and dictId == 1" >
+        train_fund = #{trainFund,jdbcType=DOUBLE},
+      </if>
+      <if test="fundDivided != null" >
+        fund_divided = #{fundDivided,jdbcType=DOUBLE},
+      </if>
+      <if test="correct != null" >
+        correct = #{correct,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null" >
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="advertising != null" >
+        advertising = #{advertising,jdbcType=DOUBLE},
+      </if>
+      <if test="favorable != null" >
+        favorable = #{favorable,jdbcType=DOUBLE},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="chainCustomerId != null" >
+        chain_customer_id = #{chainCustomerId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="companyAccountWhere" >
+    update ct_company_account_where
+    set task_id = #{taskId,jdbcType=BIGINT},
+      dict_id = #{dictId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      customer_id = #{customerId,jdbcType=VARCHAR},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      red_money = #{redMoney,jdbcType=DOUBLE},
+      serve_charge = #{serveCharge,jdbcType=DOUBLE},
+      server_divided = #{serverDivided,jdbcType=DOUBLE},
+      train_fund = #{trainFund,jdbcType=DOUBLE},
+      fund_divided = #{fundDivided,jdbcType=DOUBLE},
+      correct = #{correct,jdbcType=DOUBLE},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      phone = #{phone,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      advertising = #{advertising,jdbcType=DOUBLE},
+      favorable = #{favorable,jdbcType=DOUBLE},
+      name = #{name,jdbcType=VARCHAR},
+      chain_customer_id = #{chainCustomerId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="countRedMoney" parameterType="companyAccountWhere" resultType="Double">
+  	select sum(red_money) from ct_company_account_where
+  	where user_id = #{userId} and chain_customer_id = #{chainCustomerId} and dict_id = #{dictId}
+  </select>
+
+
+  <select id="getSumTaskCharge" parameterType="java.lang.String" resultType="java.lang.Double">
+  	SELECT
+	IFNULL(red_money + serve_charge + train_fund - (select sum(red_money) from ct_company_account_where WHERE customer_id = #{customerId} and dict_id = 4),0)
+    FROM
+        (
+            SELECT
+                sum(red_money) AS red_money,
+                sum(serve_charge) AS serve_charge,
+                sum(train_fund) AS train_fund
+            FROM
+                ct_company_account_where
+                WHERE customer_id = #{customerId}
+        ) s;
+  </select>
+
+
+</mapper>

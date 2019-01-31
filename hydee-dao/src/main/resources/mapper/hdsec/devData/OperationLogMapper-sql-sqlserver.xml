@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="operationLogDao">
+	<!-- 配置二级缓存 -->
+	<!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+	<resultMap id="rm" type="operationLog">
+		<result property="uuid" jdbcType="VARCHAR" column="uuid" />
+		<result property="userId" jdbcType="VARCHAR" column="userid" />
+		<result property="userName" jdbcType="VARCHAR" column="username" />
+		<result property="firmId" jdbcType="VARCHAR" column="firmid" />
+		<result property="firmName" jdbcType="VARCHAR" column="firmname" />
+		<result property="depId" jdbcType="VARCHAR" column="depid" />
+		<result property="depName" jdbcType="VARCHAR" column="depname" />
+		<result property="position" jdbcType="VARCHAR" column="position" />
+		<result property="visitorIp" jdbcType="VARCHAR" column="visitorip" />
+		<result property="module" jdbcType="VARCHAR" column="module" />
+		<result property="subModule" jdbcType="VARCHAR" column="submodule" />
+		<result property="visitTime" jdbcType="TIMESTAMP" column="visittime" />
+		<result property="description" jdbcType="VARCHAR" column="description" />
+		<result property="devicetoken" jdbcType="VARCHAR" column="device_token" />
+		<result property="deviceType" jdbcType="VARCHAR" column="device_type" />
+		<result property="osversion" jdbcType="VARCHAR" column="os_version" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		uuid,userid,username,firmid,firmname,depid,depname,position,visitorip,module,submodule,
+		visittime,description,device_token,device_type,os_version
+	</sql>
+
+
+	<insert id="addOperationLog" parameterType="java.util.List">
+		insert into u_operation_log(userid, username, firmid, firmname, depid, depname, position, visitorip, module, submodule, visittime,description,device_token,device_type,os_version) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			( #{item.userId}, #{item.userName}, #{item.firmId},#{item.firmName},
+			 #{item.depId},#{item.depName}, #{item.position},#{item.visitorIp}, #{item.module},
+			#{item.subModule}, getdate(), #{item.description},#{item.devicetoken},#{item.deviceType},#{item.osversion})
+		</foreach>
+	</insert>
+	<!--if not exists(select null from u_operation_ip_addr where ip = #{ip}) -->
+	<insert id="insertIpAddr" parameterType="iPAddress">
+
+	        insert into u_operation_ip_addr (ip, country, area, region, city) values (#{ip}, #{country}, #{area}, #{region}, #{city})
+	</insert>
+	
+	<select id="countIpAddr" parameterType="String" resultType="Integer">
+		select count(id) from u_operation_ip_addr where ip = #{ip}
+	</select>
+
+	<select id="findViewMessageInfo" parameterType="map" resultMap="rm">
+		select
+		max(visittime) as visittime
+		from u_operation_log
+		<where>
+			userid = #{userId}
+			and
+			firmid = #{cusId}
+			and
+			submodule =  '小蜜快报'
+		</where>
+	</select>
+</mapper>
+

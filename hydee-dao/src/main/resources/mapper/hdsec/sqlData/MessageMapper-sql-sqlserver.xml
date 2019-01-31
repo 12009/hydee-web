@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="messageDaoMappper">
+
+	<resultMap id="rm" type="mobileUser">
+		<result property="customerId" jdbcType="VARCHAR" column="customer_id"/>
+		<result property="userId" jdbcType="VARCHAR" column="user_id"/>
+		<result property="userName" jdbcType="VARCHAR" column="user_name"/>
+		<result property="imgPath" jdbcType="VARCHAR" column="img_path"/>
+		<result property="stamp" jdbcType="BIGINT" column="stamp"/>
+		<result property="cid" jdbcType="VARCHAR" column="cid"/>
+		<result property="mobileNo" jdbcType="VARCHAR" column="mobile_no"/>
+		<result property="verifyCode" jdbcType="VARCHAR" column="verify_code"/>
+		<result property="verifyCodeCreateTime" jdbcType="TIMESTAMP" column="verify_code_create_time"/>
+		<result property="birthday" jdbcType="TIMESTAMP" column="birthday"/>
+		<result property="hobby" jdbcType="VARCHAR" column="hobby"/>
+		<result property="depId" jdbcType="VARCHAR" column="dep_id"/>
+		<result property="depName" jdbcType="VARCHAR" column="dep_name"/>
+		<result property="positionNo" jdbcType="VARCHAR" column="position_no"/>
+		<result property="positionName" jdbcType="VARCHAR" column="position_name"/>
+		<result property="loginCode" jdbcType="VARCHAR" column="login_code"/>
+		<result property="loginCodeCreateTime" jdbcType="TIMESTAMP" column="login_code_create_time"/>
+		<result property="deviceToken" jdbcType="VARCHAR" column="device_token"/>
+		<result property="password" jdbcType="VARCHAR" column="password"/>
+		<result property="h2compid" jdbcType="VARCHAR" column="h2_compid"/>
+		<result property="busNo" jdbcType="VARCHAR" column="bus_no"/>
+		<result property="busName" jdbcType="VARCHAR" column="bus_name"/>
+		<result property="busArea" jdbcType="VARCHAR" column="busi_area"/>
+		<result property="customerName" jdbcType="VARCHAR" column="company_name"/>
+	</resultMap>
+	<!--基础字段-->
+	<sql id="message_column_list">
+		id,customer_id,type,content,creater_id,create_time,start_time,end_time,notice_time,head_line,compere_id,compere_name,address,sign_address,template_type,status,lat,lng,app_page_type,source_id
+	</sql>
+
+	<sql id="message_user_basic_column">
+		id,message_id,customer_id,user_id,has_read,create_time,user_name,user_phone
+	</sql>
+
+	<!--新增消息-->
+	<insert id="insertMessage" parameterType="message" useGeneratedKeys="true" keyProperty="id">
+		insert into u_message (<include refid="message_column_list" />)
+		values(#{id},#{customerId},#{type},#{content},#{createrId},getdate(),#{startTime},#{endTime},#{noticeTime},#{headLine},#{compereId},#{compereName},#{address},#{signAddress},#{templateType},#{status},#{lat},#{lng},#{appPageType},#{sourceId})
+	</insert>
+
+	<!-- 插入消息通知用户关联信息  -->
+	<insert id="insertMessageUser" parameterType="list">
+		insert into u_conn_message_user(<include refid="message_user_basic_column"/>) values
+		<foreach item="item" index="index" collection="list" open="" separator="," close="">
+			(replace(newid(), '-', ''),#{item.messageId},#{item.customerId},#{item.userId},#{item.hasRead},getdate(),#{item.userName},#{item.userPhone})
+	</foreach>
+	</insert>
+	
+
+</mapper>
+

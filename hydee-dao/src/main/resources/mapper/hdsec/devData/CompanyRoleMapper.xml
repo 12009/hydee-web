@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyRoleDao" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="companyRoleMap" type="companyRole" >
+    <id column="role_id" property="roleId" jdbcType="BIGINT" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="role_type" property="roleType" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+    <result column="modified_id" property="modifiedId" jdbcType="BIGINT" />
+    <result column="count" property="count" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    role_id, role_name, role_type, create_time, create_id, modified_time, modified_id
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="companyRoleMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_role
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findByRoleName" parameterType="companyRole" resultMap="companyRoleMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from ct_company_role
+    where role_name = #{roleName} and create_id = #{createId}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ct_company_role
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="companyRole" keyProperty="roleId">
+    insert into ct_company_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="roleName != null" >
+        role_name,
+      </if>
+      <if test="roleType != null" >
+        role_type,
+      </if>
+        create_time,
+      <if test="createId != null" >
+        create_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null" >
+        #{roleType,jdbcType=VARCHAR},
+      </if>
+        sysdate(),
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByRoleId" parameterType="companyRole" >
+    update ct_company_role
+    <set >
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null" >
+        role_type = #{roleType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="createId != null" >
+        create_id = #{createId,jdbcType=BIGINT},
+      </if>
+        modified_time = sysdate(),
+      <if test="modifiedId != null" >
+        modified_id = #{modifiedId,jdbcType=DATE},
+      </if>
+    </set>
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </update>
+  
+  <select id="listByCreateId" parameterType="Long" resultMap="companyRoleMap">
+  	select r.*,COUNT(u.id) as count from ct_company_role r left JOIN ct_company_user u ON r.role_id = u.role_id 
+  	where r.create_id = #{createId}
+  	group by r.role_id
+  </select>
+  
+  <select id="listByCreateIdListPage" parameterType="companyUser" resultMap="companyRoleMap">
+  	select r.*,COUNT(u.id) as count from ct_company_role r left JOIN ct_company_user u ON r.role_id = u.role_id 
+  	where r.create_id = #{createId,jdbcType=BIGINT}
+  	group by r.role_id
+  </select>
+  
+  <insert id="saveMenues" parameterType="companyRole">
+  	insert into ct_company_roleresop(role_id,menu_id) values
+  	<foreach collection="menuIds" separator="," item="mid">
+  	(#{roleId},#{mid})
+  	</foreach>
+  </insert>
+  
+  <delete id="clearMenuesForRoleId" parameterType="Long">
+  	delete from ct_company_roleresop where role_id = #{roleId}
+  </delete>
+  
+  <select id="countUser" parameterType="Long" resultType="Integer">
+  	select count(id) from ct_company_user where role_id = #{roleId}
+  </select>
+</mapper>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="companyTrainClassMapper" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="companyTrainClasstMap" type="companyTrainClass" >
+    <id column="class_id" property="classId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content_url" property="contentUrl" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="like_num" property="likeNum" jdbcType="INTEGER" />
+    <result column="read_num" property="readNum" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="is_position" property="isPosition" jdbcType="VARCHAR" />
+    <result column="exercisesCount" property="exercisesCount" jdbcType="INTEGER" />
+    <result column="taskCount" property="taskCount" jdbcType="INTEGER" />
+    <result column="content_type" property="contentType" jdbcType="INTEGER" />
+    <result column="customerName" property="customerName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    class_id, title, content_url, content, create_id, create_time, update_time, like_num, read_num,
+    customer_id, status, remark, is_position, content_type
+  </sql>
+  <sql id="Column_List" >
+    ctc.class_id, ctc.title, ctc.content_url, ctc.content, ctc.create_id, ctc.create_time, ctc.update_time, ctc.like_num, ctc.read_num,
+    ctc.customer_id, ctc.status, ctc.remark, ctc.is_position, ctc.content_type
+  </sql>
+
+  <sql id="selectParams">
+    <if test = "title != null ">
+      and ctc.title like '%${title}%'
+    </if>
+    <if test = "customerId != null and customerId != ''">
+      and ctc.customer_id = #{customerId}
+    </if>
+  </sql>
+
+  <!-- 查询所有课件 -->
+  <select id="queryClassAll" resultMap="companyTrainClasstMap" parameterType="companyTrainClass" >
+    select
+    <include refid = "Base_Column_List" />
+    from ct_company_train_class ctc
+    where 1=1
+    <include refid = "selectParams" />
+    <if test = "status != null ">
+      and ctc.status = #{status}
+    </if>
+    order by create_time DESC
+  </select>
+
+  <!-- 分页查询语句 -->
+  <select id="queryClassListPage" resultMap="companyTrainClasstMap" parameterType="companyTrainClass" >
+    select 
+    <include refid = "Column_List" />,
+    org.org_name as customerName,
+    (select count(1)
+    from ct_company_train_class_exercises ctce
+    where ctce.class_id=ctc.class_id) as exercisesCount,
+    (select count(1) from ct_company_train_class_task ctct
+    where ctct.class_id=ctc.class_id) as taskCount
+    from ct_company_train_class ctc
+    LEFT JOIN ct_company_organization org
+    ON ctc.customer_id = org.customer_id
+    where 1=1
+    <include refid = "selectParams" />
+    order by create_time DESC
+  </select>
+
+
+  <select id="selectByClassId" resultMap="companyTrainClasstMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from ct_company_train_class
+    where class_id = #{classId,jdbcType=BIGINT}
+  </select>
+
+  <!-- 删除课件 -->
+  <delete id="deleteByClassId" parameterType="java.lang.Long" >
+    delete from ct_company_train_class where class_id = #{classId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- 删除课件习题关联表 -->
+  <delete id="deleteClassExercisesByClassId" parameterType="java.lang.Long" >
+    delete from ct_company_train_class_exercises where class_id = #{classId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- 新增课件与习题关联表 -->
+  <insert id="insertClassExercises" parameterType="companyTrainClassExercises" >
+    insert into ct_company_train_class_exercises
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+      <if test="exercisesId != null" >
+        exercises_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=BIGINT},
+      </if>
+      <if test="exercisesId != null" >
+        #{exercisesId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+
+  <!-- 新增课件 -->
+  <insert id="insertClass" parameterType="companyTrainClass" useGeneratedKeys="true" keyProperty="classId">
+    insert into ct_company_train_class
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="classId != null" >
+        class_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="contentUrl != null" >
+        content_url,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="createId != null" >
+        create_id,
+      </if>
+        create_time,
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="likeNum != null" >
+        like_num,
+      </if>
+      <if test="readNum != null" >
+        read_num,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="isPosition != null" >
+        is_position,
+      </if>
+      <if test="contentType != null" >
+        content_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="classId != null" >
+        #{classId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="contentUrl != null" >
+        #{contentUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+      </if>
+      sysdate(),
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="likeNum != null" >
+        #{likeNum,jdbcType=INTEGER},
+      </if>
+      <if test="readNum != null" >
+        #{readNum,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isPosition != null" >
+        #{isPosition},
+      </if>
+      <if test="contentType != null" >
+        #{contentType},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateClass" parameterType="companyTrainClass" >
+    update ct_company_train_class
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="contentUrl != null" >
+        content_url = #{contentUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        create_id = #{createId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+        update_time = sysdate(),
+      <if test="likeNum != null" >
+        like_num = #{likeNum,jdbcType=INTEGER},
+      </if>
+      <if test="readNum != null" >
+        read_num = #{readNum,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isPosition != null" >
+        is_position = #{isPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="contentType != null" >
+        content_type = #{contentType},
+      </if>
+    </set>
+    where class_id = #{classId,jdbcType=BIGINT}
+  </update>
+</mapper>

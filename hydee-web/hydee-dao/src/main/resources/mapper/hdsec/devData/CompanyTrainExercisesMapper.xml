@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="companyTrainExercisesMapper" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="companyTrainExercisesMap" type="companyTrainExercises" >
+    <id column="exercises_id" property="exercisesId" jdbcType="BIGINT" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modified_id" property="modifiedId" jdbcType="BIGINT" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="CompanyTrainExercisesOptionsMap" type="companyTrainExercisesOptions" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="option_no" property="optionNo" jdbcType="VARCHAR" />
+    <result column="exercises_id" property="exercisesId" jdbcType="BIGINT" />
+    <result column="is_answer" property="isAnswer" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="companyTrainExercisesAndOptions" type="companyTrainExercises" extends="companyTrainExercisesMap">
+    <association property="companyTrainExercises" column="class_id" select="companyTrainExercisesMapper.selectByClassId"></association>
+    <collection property="optionsList" column="exercisesId" ofType="companyTrainExercisesOptions" select="companyTrainExercisesMapper.selectOptionsByExercisesId" />
+  </resultMap>
+
+  <resultMap id="companyTrainErrorOptionMap" type="companyTrainErrorOption" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="exercises_id" property="exercisesId" jdbcType="BIGINT" />
+    <result column="choose_no" property="chooseNo" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    exercises_id, content, type, answer, create_id, create_time, modified_id, modified_time
+  </sql>
+  <sql id="Column_List" >
+    te.exercises_id, te.content, te.type, te.answer, te.create_id, te.create_time, te.modified_id, te.modified_time
+  </sql>
+
+  <select id="selectOptionsByExercisesId" resultMap="CompanyTrainExercisesOptionsMap" parameterType="java.lang.Long">
+    select id, content, option_no, exercises_id, is_answer from ct_company_train_exercises_options where exercises_id = #{exercisesId,jdbcType=BIGINT};
+
+  </select>
+
+  <!-- 根据课件ID 查询出课件所属的习题 -->
+  <select id="selectByClassId" resultMap="companyTrainExercisesMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Column_List" />
+    from ct_company_train_exercises te
+    LEFT JOIN ct_company_train_class_exercises tce
+    on te.exercises_id=tce.exercises_id
+    where tce.class_id = #{classId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByExercisesId" resultMap="companyTrainExercisesMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_train_exercises
+    where exercises_id = #{exercisesId,jdbcType=BIGINT}
+  </select>
+
+  <!-- 查询错误题目 -->
+  <select id="selectErrorOption" resultMap="companyTrainErrorOptionMap" parameterType="companyTrainErrorOption" >
+    select
+    id, exercises_id, choose_no, customer_id, user_id, task_id
+    from ct_company_train_error_option
+    where customer_id = #{customerId} and user_id = #{userId} and task_id = #{taskId}
+  </select>
+
+  <!-- 根据课件ID删除所对应习题 -->
+  <delete id="deleteExercisesByClassId" parameterType="java.lang.Long" >
+    delete from ct_company_train_exercises
+    where exercises_id in (select exercises_id from ct_company_train_class_exercises where class_id=#{classId,jdbcType=BIGINT})
+  </delete>
+
+  <!-- 根据课件ID 删除所对应的习题选项 -->
+  <delete id="deleteExercisesOptionsByClassId" parameterType="java.lang.Long" >
+    DELETE FROM ct_company_train_exercises_options WHERE exercises_id in (select exercises_id from ct_company_train_class_exercises where class_id=#{classId,jdbcType=BIGINT})
+  </delete>
+
+
+
+  <!-- 新增错误试题 -->
+  <insert id="insertErrorOption" parameterType="list" >
+    insert into ct_company_train_error_option (exercises_id, choose_no, customer_id, user_id, task_id)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.exercisesId,jdbcType=BIGINT}, #{item.chooseNo,jdbcType=VARCHAR},
+      #{item.customerId,jdbcType=VARCHAR}, #{item.userId,jdbcType=VARCHAR}, #{item.taskId,jdbcType=BIGINT}
+      )
+    </foreach>
+  </insert>
+
+  <!-- 新增习题 -->
+  <insert id="insertExercises" parameterType="companyTrainExercises" useGeneratedKeys="true" keyProperty="exercisesId">
+    insert into ct_company_train_exercises
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="exercisesId != null" >
+        exercises_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="answer != null" >
+        answer,
+      </if>
+      <if test="createId != null" >
+        create_id,
+      </if>
+        create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="exercisesId != null" >
+        #{exercisesId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+      </if>
+      sysdate()
+    </trim>
+  </insert>
+
+  <!-- 新增习题选项 -->
+  <insert id="insertExercisesOptions" parameterType="companyTrainExercisesOptions" >
+    insert into ct_company_train_exercises_options
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="optionNo != null" >
+        option_no,
+      </if>
+      <if test="exercisesId != null" >
+        exercises_id,
+      </if>
+      <if test="isAnswer != null" >
+        is_answer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="optionNo != null" >
+        #{optionNo,jdbcType=VARCHAR},
+      </if>
+      <if test="exercisesId != null" >
+        #{exercisesId,jdbcType=BIGINT},
+      </if>
+      <if test="isAnswer != null" >
+        #{isAnswer,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <!-- 修改习题 -->
+  <update id="updateByExercises" parameterType="companyTrainExercises" >
+    update ct_company_train_exercises
+    <set >
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        create_id = #{createId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedId != null" >
+        modified_id = #{modifiedId,jdbcType=BIGINT},
+      </if>
+        modified_time = sysdate()
+    </set>
+    where exercises_id = #{exercisesId,jdbcType=BIGINT}
+  </update>
+</mapper>

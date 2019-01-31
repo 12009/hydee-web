@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyCustomerAccountDao" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="CompanyCustomerAccountMap" type="companyCustomerAccount" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="balance" property="balance" jdbcType="DOUBLE" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, customer_id, balance, customer_name, create_time
+  </sql>
+
+  <select id="selectCustomerAccount" resultMap="CompanyCustomerAccountMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_customer_account
+    where customer_id = #{customerId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteCustomerAccount" parameterType="java.lang.Long" >
+    delete from ct_company_customer_account
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertCustomerAccount" parameterType="companyCustomerAccount" >
+    insert into ct_company_customer_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="balance != null" >
+        balance,
+      </if>
+      <if test="customerName != null" >
+        customer_name,
+      </if>
+        create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      sysdate()
+    </trim>
+  </insert>
+
+  <update id="updateCustomerAccount" parameterType="companyCustomerAccount" >
+    update ct_company_customer_account
+    <set >
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null" >
+        balance = #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

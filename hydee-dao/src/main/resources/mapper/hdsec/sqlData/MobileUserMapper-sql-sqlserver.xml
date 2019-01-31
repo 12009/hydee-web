@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.hydee.hdsec.sqlDao.MobileUserDao">
+
+	<resultMap id="rm" type="mobileUser">
+		<result property="customerId" jdbcType="VARCHAR" column="customer_id"/>
+		<result property="userId" jdbcType="VARCHAR" column="user_id"/>
+		<result property="userName" jdbcType="VARCHAR" column="user_name"/>
+		<result property="imgPath" jdbcType="VARCHAR" column="img_path"/>
+		<result property="stamp" jdbcType="BIGINT" column="stamp"/>
+		<result property="cid" jdbcType="VARCHAR" column="cid"/>
+		<result property="mobileNo" jdbcType="VARCHAR" column="mobile_no"/>
+		<result property="verifyCode" jdbcType="VARCHAR" column="verify_code"/>
+		<result property="verifyCodeCreateTime" jdbcType="TIMESTAMP" column="verify_code_create_time"/>
+		<result property="birthday" jdbcType="TIMESTAMP" column="birthday"/>
+		<result property="hobby" jdbcType="VARCHAR" column="hobby"/>
+		<result property="depId" jdbcType="VARCHAR" column="dep_id"/>
+		<result property="depName" jdbcType="VARCHAR" column="dep_name"/>
+		<result property="positionNo" jdbcType="VARCHAR" column="position_no"/>
+		<result property="positionName" jdbcType="VARCHAR" column="position_name"/>
+		<result property="loginCode" jdbcType="VARCHAR" column="login_code"/>
+		<result property="loginCodeCreateTime" jdbcType="TIMESTAMP" column="login_code_create_time"/>
+		<result property="deviceToken" jdbcType="VARCHAR" column="device_token"/>
+		<result property="password" jdbcType="VARCHAR" column="password"/>
+		<result property="h2compid" jdbcType="VARCHAR" column="h2_compid"/>
+		<result property="busNo" jdbcType="VARCHAR" column="bus_no"/>
+		<result property="busName" jdbcType="VARCHAR" column="bus_name"/>
+		<result property="busArea" jdbcType="VARCHAR" column="busi_area"/>
+		<result property="customerName" jdbcType="VARCHAR" column="company_name"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		customer_id,rtrim(user_id) as user_id,user_name,img_path,convert(bigint,stamp) as stamp,password,h2_compid,busi_area,bus_no
+	</sql>
+
+	<select id="getByMobileUser" parameterType="java.util.Map"  resultMap="rm">
+		select top 1 
+			<include refid="Base_Column_List" />,cid,mobile_no,verify_code,verify_code_create_time,birthday,hobby,dep_id,dep_name,position_no,position_name,device_token
+			from c_mobile_user where customer_id=#{customerId} and user_id=#{userId}
+	</select>
+
+	<select id="queryXmUserIdByCid" parameterType="java.lang.String"  resultMap="rm">
+		select user_id,user_name
+		from c_mobile_user where customer_id=#{customerId} and password &lt;> '';
+	</select>
+
+	<select id="queryMobileUserByCustomerId" parameterType="String"  resultMap="rm">
+		select
+		<include refid="Base_Column_List" />,cid,mobile_no,verify_code,verify_code_create_time,birthday,hobby,dep_id,dep_name,position_no,position_name,device_token
+		from c_mobile_user where customer_id=#{customerId}
+	</select>
+	
+
+</mapper>
+

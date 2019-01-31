@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyBindBankMapper" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="CompanyBindBankMap" type="companyBindBank" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+    <result column="bank_card" property="bankCard" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="owner_name" property="ownerName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, bank_name, bank_card, customer_id, user_id, create_time, owner_name
+  </sql>
+
+  <select id="selectById" parameterType="java.lang.Long" resultMap="CompanyBindBankMap">
+  	select <include refid="Base_Column_List" /> from ct_company_bind_bank where id = #{id}
+  </select>
+
+  <select id="selectBindBankByCidAndUserId" resultMap="CompanyBindBankMap" parameterType="companyBindBank" >
+    select 
+    id, bank_name, right(bank_card,4) bank_card, customer_id, user_id, create_time, owner_name
+    from ct_company_bind_bank
+    where customer_id = #{customerId} and user_id = #{userId} order by id
+  </select>
+  
+  <select id="selectCardByBankCard" parameterType="companyBindBank" resultType="java.lang.Integer">
+  	select count(id) from ct_company_bind_bank 
+  	where customer_id = #{customerId} and user_id = #{userId} and bank_card = #{bankCard}
+  </select>
+
+  <delete id="deleteBindBank" parameterType="java.lang.Long" >
+    delete from ct_company_bind_bank
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertBindBank" parameterType="companyBindBank" >
+    insert into ct_company_bind_bank
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bankName != null" >
+        bank_name,
+      </if>
+      <if test="bankCard != null" >
+        bank_card,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="ownerName != null">
+      	owner_name,
+      </if>
+        create_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCard != null" >
+        #{bankCard,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+      	#{ownerName,jdbcType=VARCHAR},
+      </if>
+        SYSDATE(),
+    </trim>
+  </insert>
+
+  <update id="updateBindBank" parameterType="companyBindBank" >
+    update ct_company_bind_bank
+    <set >
+      <if test="bankName != null" >
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCard != null" >
+        bank_card = #{bankCard,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ownerName != null">
+      	owner_name = #{ownerName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectLastUsefulBankCard" resultMap="CompanyBindBankMap" parameterType="companyBindBank" >
+    select b.id, b.bank_name, right(b.bank_card,4) bank_card, b.customer_id, b.user_id, b.create_time, b.owner_name
+    from ct_company_bind_bank b right join ct_company_withdrawal w on b.bank_card = w.bank_card
+    where b.customer_id = #{customerId} and b.user_id = #{userId}
+    order by w.create_time desc limit 1
+  </select>
+</mapper>

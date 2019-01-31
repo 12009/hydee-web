@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyTrainExercisesTypeDao" >
+  <resultMap id="BaseResultMap" type="companyTrainExercisesType" >
+    <id column="class_type_id" property="classTypeId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    class_type_id, name, create_id, create_time, customer_id
+  </sql>
+  <sql id="Column_List" >
+    t.class_type_id, t.name, t.create_id, t.create_time, t.customer_id
+  </sql>
+
+  <sql id="pageWhere">
+    <where>
+      <if test="customerId != null and customerId != ''">
+        and customer_id = #{customerId}
+      </if>
+      <if test="name != null and name != ''">
+        and name = #{name}
+      </if>
+    </where>
+  </sql>
+  <sql id="listWhere">
+    <where>
+      <if test="customerId != null and customerId != ''">
+        and t.customer_id = #{customerId}
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectTypeListPage" resultMap="BaseResultMap" parameterType="companyTrainExercisesType" >
+    select
+    <include refid="Column_List" />,u.real_name
+    from ct_company_train_exercises_type t
+    LEFT JOIN ct_company_user u
+    ON u.id = t.create_id
+    <include refid="listWhere"/>
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="selectTypeByCustomerId" resultMap="BaseResultMap" parameterType="companyTrainExercisesType" >
+    select
+    <include refid="Base_Column_List" />
+    from ct_company_train_exercises_type
+    <include refid="pageWhere"/>
+  </select>
+
+  <select id="selectTypeByName" resultMap="BaseResultMap" parameterType="companyTrainExercisesType" >
+    select
+    <include refid="Base_Column_List" />
+    from ct_company_train_exercises_type
+    <include refid="pageWhere"/>
+  </select>
+
+  <select id="selectTypeById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_train_exercises_type
+    where class_type_id = #{classTypeId,jdbcType=BIGINT}
+  </select>
+
+  <select id="getExercisesType" resultType="java.lang.Integer" parameterType="companyTrainExercisesType" >
+    select
+    count(1)
+    from ct_company_train_exercises_type
+    where class_type_id != #{classTypeId,jdbcType=BIGINT}
+    AND name = #{name}
+    AND customer_id = #{customerId}
+  </select>
+
+  <delete id="deleteTypeById" parameterType="java.lang.Long" >
+    delete from ct_company_train_exercises_type
+    where class_type_id = #{classTypeId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertExercisesType" parameterType="companyTrainExercisesType" >
+    insert into ct_company_train_exercises_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="createId != null" >
+        create_id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+        create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null" >
+        #{customerId},
+      </if>
+      sysdate()
+    </trim>
+  </insert>
+  <update id="updateTypeById" parameterType="companyTrainExercisesType" >
+    update ct_company_train_exercises_type
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where class_type_id = #{classTypeId,jdbcType=BIGINT}
+  </update>
+</mapper>

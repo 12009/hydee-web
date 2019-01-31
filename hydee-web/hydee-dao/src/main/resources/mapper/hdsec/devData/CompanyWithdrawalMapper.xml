@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyWithdrawalDao" >
+    <!-- 配置二级缓存 -->
+    <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="companyWithdrawalMap" type="companyWithdrawal" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="put_money" property="putMoney" jdbcType="DOUBLE" />
+    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+    <result column="bank_card" property="bankCard" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="remit_time" property="remitTime" jdbcType="TIMESTAMP" />
+    <result column="remittor_id" property="remittorId" jdbcType="VARCHAR" />
+    <result column="remittor_name" property="remittorName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, serial_number, user_id, user_name, customer_id, customer_name, phone, put_money, 
+    bank_name, bank_card, status, remark, create_time, remit_time, remittor_id, remittor_name
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="companyWithdrawalMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_withdrawal
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="querySelectiveListPage" resultMap="companyWithdrawalMap" parameterType="companyWithdrawal">
+  	select 
+    <include refid="Base_Column_List" />
+    from ct_company_withdrawal
+    <where>
+    	1 = 1
+    	<if test="userId != null and userId != ''"> and user_id = #{userId} </if>
+    	<if test="customerId != null and customerId != ''"> and customer_id = #{customerId} </if>
+    	<if test="status != null and status &lt; 99"> and status = #{status} </if>
+    	<if test="keywords != null and keywords != ''"> and (customer_name like '%${keywords}%' or user_name like '%${keywords}%')</if>
+    	<if test="startTime_c != null and startTime_c != ''"> and create_time &gt; #{startTime_c}</if>
+    	<if test="endTime_c != null and  endTime_c != ''"> and create_time &lt; #{endTime_c}</if>
+    </where>
+    order by status, create_time DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ct_company_withdrawal
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="companyWithdrawal" useGeneratedKeys="true">
+    insert into ct_company_withdrawal (id, serial_number, user_id, 
+      user_name, customer_id, customer_name, phone, put_money, 
+      bank_name, bank_card, status, remark, create_time,
+      remit_time, remittor_id, remittor_name)
+    values (#{id,jdbcType=BIGINT}, GetSerialNumber('TX'), #{userId,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{putMoney,jdbcType=DOUBLE}, #{bankName,jdbcType=VARCHAR}, 
+      #{bankCard,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, SYSDATE(),
+      #{remitTime}, #{remittorId}, #{remittorName})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="companyWithdrawal" useGeneratedKeys="true">
+    insert into ct_company_withdrawal
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+        serial_number,
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="customerName != null" >
+        customer_name,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="putMoney != null" >
+        put_money,
+      </if>
+      <if test="bankName != null" >
+        bank_name,
+      </if>
+      <if test="bankCard != null" >
+        bank_card,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+        create_time,
+      <if test="remitTime"> remit_time, </if>
+      <if test="remittorId"> remittor_id, </if>
+      <if test="remittorName"> remittor_name, </if>
+    </trim>
+    
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+	    GetSerialNumber('TX'),
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="putMoney != null" >
+        #{putMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCard != null" >
+        #{bankCard,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+        SYSDATE(),
+      <if test="remitTime"> #{remitTime}, </if>
+      <if test="remittorId"> #{remittorId}, </if>
+      <if test="remittorName"> #{remittorName}, </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelectiveBatch" parameterType="List">
+  	<foreach collection="list" item="item" separator=";">
+  		update ct_company_withdrawal
+	    <set >
+	      <if test="item.serialNumber != null" >
+	        serial_number = #{item.serialNumber,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.userId != null" >
+	        user_id = #{item.userId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.userName != null" >
+	        user_name = #{item.userName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.customerId != null" >
+	        customer_id = #{item.customerId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.customerName != null" >
+	        customer_name = #{item.customerName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.phone != null" >
+	        phone = #{item.phone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.putMoney != null" >
+	        put_money = #{item.putMoney,jdbcType=DOUBLE},
+	      </if>
+	      <if test="item.bankName != null" >
+	        bank_name = #{item.bankName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.bankCard != null" >
+	        bank_card = #{item.bankCard,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.status != null" >
+	        status = #{item.status,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.remark != null" >
+	        remark = #{item.remark,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.createTime != null" >
+	        create_time = #{item.createTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="item.remitTime">
+	      	remit_time = #{item.remitTime}, 
+	      </if>
+	      <if test="item.remittorId"> 
+	        remittor_id = #{item.remittorId}, 
+	      </if>
+	      <if test="item.remittorName"> 
+	        remittor_name = #{item.remittorName}, 
+	      </if>
+	    </set>
+	    where id = #{item.id,jdbcType=BIGINT}
+  	</foreach>
+  </update>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="companyWithdrawal" >
+    update ct_company_withdrawal
+    <set >
+      <if test="serialNumber != null" >
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="putMoney != null" >
+        put_money = #{putMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="bankName != null" >
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCard != null" >
+        bank_card = #{bankCard,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remitTime">
+      	remit_time = #{remitTime}, 
+      </if>
+      <if test="remittorId"> 
+        remittor_id = #{remittorId}, 
+      </if>
+      <if test="remittorName"> 
+        remittor_name = #{remittorName}, 
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="companyWithdrawal" >
+    update ct_company_withdrawal
+    set serial_number = #{serialNumber,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      customer_id = #{customerId,jdbcType=VARCHAR},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      put_money = #{putMoney,jdbcType=DOUBLE},
+      bank_name = #{bankName,jdbcType=VARCHAR},
+      bank_card = #{bankCard,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remit_time = #{remitTime}, 
+      remittor_id = #{remittorId}, 
+      remittor_name = #{remittorName}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectTodayWithdrawCount" parameterType="companyWithdrawal" resultType="java.lang.Integer">
+  	select count(id) from ct_company_withdrawal
+  	where user_id = #{userId} and customer_id = #{customerId} and TO_DAYS(create_time) = TO_DAYS(NOW())
+  </select>
+</mapper>

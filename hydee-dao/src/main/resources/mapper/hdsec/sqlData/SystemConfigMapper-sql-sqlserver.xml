@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.hydee.hdsec.sqlDao.SystemConfigDao">
+
+	<resultMap id="rm" type="systemConfig">
+		<result property="key" jdbcType="VARCHAR" column="ckey"/>
+		<result property="name" jdbcType="VARCHAR" column="cname"/>
+		<result property="value" jdbcType="VARCHAR" column="cvalue"/>
+		<result property="description" jdbcType="VARCHAR" column="description"/>
+		<result property="lastupDatetime" jdbcType="TIMESTAMP" column="lastupdatetime"/>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		ckey,cname,cvalue,description,lastupdatetime
+	</sql>
+	
+	<select id="findByPrimaryKey" parameterType="String" resultMap="rm">
+		select 
+			<include refid="Base_Column_List" />
+		from c_system_config where ckey = #{key}
+		
+	</select>
+	
+	<!--查询相关配置项列表  -->
+	<select id="listSystemConfig4Member" resultMap="rm" >
+		select 
+		    <include refid="Base_Column_List" />
+		from c_system_config where ckey like 'expval_%' or ckey like 'pointsval_%'
+	</select>
+	
+</mapper>
+

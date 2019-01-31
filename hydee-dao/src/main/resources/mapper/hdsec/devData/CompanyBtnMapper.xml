@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyBtnDao" >
+  <resultMap id="BaseResultMap" type="companyBtn" >
+    <id column="btn_id" property="btnId" jdbcType="BIGINT" />
+    <result column="menu_id" property="menuId" jdbcType="BIGINT" />
+    <result column="btn_name" property="btnName" jdbcType="VARCHAR" />
+    <result column="btn_code" property="btnCode" jdbcType="VARCHAR" />
+    <result column="btn_url" property="btnUrl" jdbcType="VARCHAR" />
+    <result column="btn_type" property="btnType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    btn_id, menu_id, btn_name, btn_code, btn_url, btn_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_btn
+    where btn_id = #{btnId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ct_company_btn
+    where btn_id = #{btnId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="companyBtn" >
+    insert into ct_company_btn (btn_id, menu_id, btn_name, 
+      btn_code, btn_url, btn_type
+      )
+    values (#{btnId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT}, #{btnName,jdbcType=VARCHAR}, 
+      #{btnCode,jdbcType=VARCHAR}, #{btnUrl,jdbcType=VARCHAR}, #{btnType,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="companyBtn" >
+    insert into ct_company_btn
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="btnId != null" >
+        btn_id,
+      </if>
+      <if test="menuId != null" >
+        menu_id,
+      </if>
+      <if test="btnName != null" >
+        btn_name,
+      </if>
+      <if test="btnCode != null" >
+        btn_code,
+      </if>
+      <if test="btnUrl != null" >
+        btn_url,
+      </if>
+      <if test="btnType != null" >
+        btn_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="btnId != null" >
+        #{btnId,jdbcType=BIGINT},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="btnName != null" >
+        #{btnName,jdbcType=VARCHAR},
+      </if>
+      <if test="btnCode != null" >
+        #{btnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="btnUrl != null" >
+        #{btnUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="btnType != null" >
+        #{btnType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="companyBtn" >
+    update ct_company_btn
+    <set >
+      <if test="menuId != null" >
+        menu_id = #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="btnName != null" >
+        btn_name = #{btnName,jdbcType=VARCHAR},
+      </if>
+      <if test="btnCode != null" >
+        btn_code = #{btnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="btnUrl != null" >
+        btn_url = #{btnUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="btnType != null" >
+        btn_type = #{btnType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where btn_id = #{btnId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="companyBtn" >
+    update ct_company_btn
+    set menu_id = #{menuId,jdbcType=BIGINT},
+      btn_name = #{btnName,jdbcType=VARCHAR},
+      btn_code = #{btnCode,jdbcType=VARCHAR},
+      btn_url = #{btnUrl,jdbcType=VARCHAR},
+      btn_type = #{btnType,jdbcType=VARCHAR}
+    where btn_id = #{btnId,jdbcType=BIGINT}
+  </update>
+</mapper>

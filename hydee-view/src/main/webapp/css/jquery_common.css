@@ -1,0 +1,846 @@
+@charset "utf-8";
+
+/*图片上传*/
+.lblfile-square-max{
+    width: 150px;
+    height: 150px;
+    position: relative;
+    background-color: #ffffff;
+}
+.lblfile-rec-max{
+    width: 750px;
+    height: 200px;
+    border: 1px dashed #E3E1DE;
+}
+.uploadImg{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    margin-right: 15px;
+}
+.uploadImg img{
+    float: left;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.uploadImg:hover .editImg{ display: block;}
+.uploadImg .editImg{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    background-color: rgba(0,0,0,0.5);
+    filter:alpha(opacity=50);
+    color: #fff;
+    display: none;
+}
+.uploadImg .editImg label{
+    float: left;
+    width: 50%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 12px;
+}
+.littleFileShow{
+	margin-right: 10px;
+}
+.littleFileShow .uploadImg img,.littleFileShow .uploadImg{
+    width: auto;
+    min-width: 80px;
+    height: 80px;
+}
+.littleFileShow .uploadImg{ margin-top:10px;}
+
+/*颜色选择器的相关样式*/
+.inputcolor{
+    width: 30px;
+    height: 30px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+.colorSelect{
+    width:260px;
+    position: absolute;
+    left:0px;
+    top:0px;
+    z-index: 9999;
+    background-color: #fff;
+    border:1px solid #E6F0EF;
+    padding:0 10px 10px 0;
+    border-collapse: inherit;
+    display:none;
+}
+.colorSelect td{
+    display: inline-block;
+    width:30px;
+    height:30px;
+    margin-left:10px;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+/*输入框的下拉列表的相关样式*/
+.dropList{ position: relative;}
+.dropList ul{
+    width: 100%;
+    max-height: 100px;
+    background-color: #fff;
+    bottom: 17px;
+    max-height: 130px;
+    overflow: auto;
+}
+.dropList ul li{
+    width: 100%;
+    padding-left: 10px;
+    height: 26px;
+    line-height: 26px;
+    cursor: pointer;
+    text-align: center;
+    margin: 0 !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.dropList ul li:hover{
+    background-color: #eee;
+    color: #d72a54;
+}
+.dropList-top{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: auto;
+    border: 1px solid #A2A0A0;
+    border-color: #A2A0A0 !important;
+    background-color: #fff !important;
+    -webkit-box-shadow: 0 0 6px #8F8C8C;
+    -moz-box-shadow: 0 0 6px #8F8C8C;
+    box-shadow:  0 0 6px #8F8C8C;
+    padding: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    display: none;
+    z-index:999999;
+}
+.dropList-top div{
+    width: 100%;
+    height: 30px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.dropList-top span{
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 2px;
+    font-size: 12px;
+    width: 11px;
+    height: 28px;
+    line-height: 28px;
+}
+.dropList-top input[type='text']{
+    width: 100%;
+    margin-bottom: 4px;
+}
+.dropList-con{
+    width: 340px;
+    height: 30px;
+    line-height: 28px;
+    background-color: #fff;
+    border:1px solid #dce0e0;
+    color: #999999;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    z-index:9;
+}
+.dropList-con.ok{ color: #000;}
+
+/*带提示的柱状图*/
+.accountDetail_wp li .dataShow{
+    width: 100%;
+    height: 200px;
+    position: relative;
+}
+.accountDetail_wp>li .dataShow li{
+    position: absolute;
+    bottom: 0;
+    width:4px;
+    height: 8px;
+    background-color: #E3E1DE;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+    margin-left: 4px;
+}
+.accountDetail_wp>li .dataShow li.on{
+    background-color: #FD6A3D;
+}
+.accountDetail_wp>li .floatDaTa{
+    position: absolute;
+    left: 100px;
+    bottom: 120px;
+    width: 154px;
+    height: 70px;
+    background-color: transparent;
+    display: none;
+}
+.accountDetail_wp>li .floatDaTa .floatDataMain{
+    position: relative;
+    width: 154px;
+    height: 58px;
+    text-align: center;
+    border: 1px solid #E4E2DF;
+    padding-top: 10px;
+    background-color: #ffffff;
+}
+.accountDetail_wp>li .floatDaTa .floatDataMain p{
+    color: #666460;
+    font-size: 12px;
+}
+.accountDetail_wp>li .floatDaTa .floatDataMain p.date{ color: #343535;}
+.accountDetail_wp>li .floatDaTa .floatDataMain .arrow{
+    position: absolute;
+    left: 68px;
+    width: 18px;
+    height: 20px;
+    display: inline-block;
+}
+.accountDetail_wp>li .floatDaTa .floatDataMain .arrowF{
+    bottom: -18px;
+    border-right: solid 10px transparent;
+    border-top: solid 10px #FFFFFF;
+    border-bottom: solid 10px transparent;
+    border-left: solid 10px transparent;
+    z-index: 1;
+}
+.accountDetail_wp>li .floatDaTa .floatDataMain .arrowL{
+    bottom: -20px;
+    border-right: solid 10px transparent;
+    border-top: solid 10px #E4E2DF;
+    border-bottom: solid 10px transparent;
+    border-left: solid 10px transparent;
+}
+
+/*时间选择器*/
+.xdsoft_datetimepicker{
+    box-shadow: 0px 5px 15px -5px rgba(0, 0, 0, 0.506);
+    background: #FFFFFF;
+    border-bottom: 1px solid #BBBBBB;
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    color: #333333;
+    display: block;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    padding: 8px;
+    padding-left: 0px;
+    padding-top: 2px;
+    position: absolute;
+    z-index: 9999;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display:none;
+}
+
+.xdsoft_datetimepicker iframe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 75px;
+    height: 210px;
+    background: transparent;
+    border:none;
+}
+/*For IE8 or lower*/
+.xdsoft_datetimepicker button {
+    border:none !important;
+}
+.xdsoft_noselect{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+.xdsoft_noselect .active{ background-color:#ffffff !important;}
+.xdsoft_noselect::selection { background: transparent; }
+.xdsoft_noselect::-moz-selection { background: transparent; }
+.xdsoft_datetimepicker.xdsoft_inline{
+    display: inline-block;
+    position: static;
+    box-shadow: none;
+}
+.xdsoft_datetimepicker *{
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding:0px;
+    margin:0px;
+}
+.xdsoft_datetimepicker .xdsoft_datepicker, .xdsoft_datetimepicker  .xdsoft_timepicker{
+    display:none;
+}
+.xdsoft_datetimepicker .xdsoft_datepicker.active, .xdsoft_datetimepicker  .xdsoft_timepicker.active{
+    display:block;
+}
+.xdsoft_datetimepicker .xdsoft_datepicker{
+    width: 224px;
+    float:left;
+    margin-left:8px;
+}
+.xdsoft_datetimepicker  .xdsoft_timepicker{
+    width: 58px;
+    float:left;
+    text-align:center;
+    margin-left:8px;
+    margin-top:0px;
+}
+.xdsoft_datetimepicker  .xdsoft_datepicker.active+.xdsoft_timepicker{
+    margin-top:8px;
+    margin-bottom:3px
+}
+.xdsoft_datetimepicker  .xdsoft_mounthpicker{
+    position: relative;
+    text-align: center;
+}
+
+.xdsoft_datetimepicker  .xdsoft_prev, .xdsoft_datetimepicker  .xdsoft_next,.xdsoft_datetimepicker  .xdsoft_today_button{
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAAAeCAYAAACsYQl4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDozQjRCQjRGREU4MkNFMzExQjRDQkIyRDJDOTdBRUI1MCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpCQjg0OUYyNTZDODAxMUUzQjMwM0IwMERBNUU0ODQ5NSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpCQjg0OUYyNDZDODAxMUUzQjMwM0IwMERBNUU0ODQ5NSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkI5NzE3MjFBN0E2Q0UzMTFBQjJEQjgzMDk5RTNBNTdBIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjNCNEJCNEZERTgyQ0UzMTFCNENCQjJEMkM5N0FFQjUwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+aQvATgAAAfVJREFUeNrsmr1OwzAQxzGtkPjYEAuvVGAvfQIGRKADE49gdLwDDwBiZ2RhQUKwICQkWLsgFiRQuIBTucFJ/XFp4+hO+quqnZ4uvzj2nV2RpukCW/22yAgYNINmc7du7DcghCjrkqgOKjF1znpt6rZ0AGWQj7TvCU8d9UM+QAGDrhdyc2Bnc1WVVPBev9V8lBnY+rDwncWZThG4xk4lmxtJy2AHgoY/FySgbSBPwPZ8mEXbQx3aDERb0EbYAYFC7pcAtAvkMWwC0D3NX58S9D/YnoGC7nPWr3Dg9JTbtuHhDShBT8D2CBSK/iIEvVXxpuxSgh7DdgwUTL4iA92zmJb6lKB/YTsECmV+IgK947AGDIqgQ/LojsO135Hn51l2cWlov0JdGNrPUceueXRwilSVgkUyom9Rd6gbLfYTDeO+1v6orn0InTogYDGUkYLO3/wc9BdqqTCKP1Tfi+oTIaCBIL2TES+GTyruT9S61p6BHam+99DFEAgLFklYsIBHwSI9QY80H5ta+1rB/6ovaKihBJeEJbgLbBlQgl+j3lDPqA2tfQV1j3pVn8s+oKHGTSVJ+FqDLeR5bCqJ2E/BCycsoLZETXaKGs7rhKVt+9HZScrZNMi88V8P7LlDbvOZYaJVpMMmBCT4n0o8dTBoNgbdWPsRYACs3r7XyNfbnAAAAABJRU5ErkJggg==');
+}
+.xdsoft_datetimepicker  .xdsoft_prev{
+    float: left;
+    background-position:-20px 0px;
+}
+.xdsoft_datetimepicker  .xdsoft_today_button{
+    float: left;
+    background-position:-70px 0px;
+    margin-left:5px;
+}
+
+.xdsoft_datetimepicker  .xdsoft_next{
+    float: right;
+    background-position:0px 0px;
+}
+.xdsoft_datetimepicker  .xdsoft_next:active,.xdsoft_datetimepicker  .xdsoft_prev:active{
+}
+.xdsoft_datetimepicker  .xdsoft_next,.xdsoft_datetimepicker  .xdsoft_prev ,.xdsoft_datetimepicker  .xdsoft_today_button{
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: 0px none currentColor;
+    cursor: pointer;
+    display: block;
+    height: 30px;
+    opacity: 0.5;
+    outline: medium none currentColor;
+    overflow: hidden;
+    padding: 0px;
+    position: relative;
+    text-indent: 100%;
+    white-space: nowrap;
+    width: 20px;
+}
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_prev,
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_next{
+    float:none;
+    background-position:-40px -15px;
+    height: 15px;
+    width: 30px;
+    display: block;
+    margin-left:14px;
+    margin-top:7px;
+}
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_prev{
+    background-position:-40px 0px;
+    margin-bottom:7px;
+    margin-top:0px;
+}
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_time_box{
+    height:151px;
+    overflow:hidden;
+    border-bottom:1px solid #DDDDDD;
+}
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_time_box >div >div{
+    background: #F5F5F5;
+    border-top:1px solid #DDDDDD;
+    color: #666666;
+    font-size: 12px;
+    text-align: center;
+    border-collapse:collapse;
+    cursor:pointer;
+    border-bottom-width:0px;
+    height:25px;
+    line-height:25px;
+}
+
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_time_box >div > div:first-child{
+    border-top-width:0px;
+}
+.xdsoft_datetimepicker  .xdsoft_today_button:hover,
+.xdsoft_datetimepicker  .xdsoft_next:hover,
+.xdsoft_datetimepicker  .xdsoft_prev:hover {
+    opacity: 1;
+}
+.xdsoft_datetimepicker  .xdsoft_label{
+    display: inline;
+    position: relative;
+    z-index: 9999;
+    margin: 0;
+    padding: 5px 3px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: bold;
+    background-color: #fff;
+    float:left;
+    width:182px;
+    text-align:center;
+    cursor:pointer;
+}
+.xdsoft_datetimepicker  .xdsoft_label:hover{
+    text-decoration:underline;
+}
+.xdsoft_datetimepicker  .xdsoft_label > .xdsoft_select{
+    border:1px solid #ccc;
+    position:absolute;
+    display:block;
+    right:0px;
+    top:30px;
+    z-index:101;
+    display:none;
+    background:#fff;
+    max-height:160px;
+    overflow-y:hidden;
+}
+.xdsoft_datetimepicker  .xdsoft_label > .xdsoft_select.xdsoft_monthselect{right:-7px;}
+.xdsoft_datetimepicker  .xdsoft_label > .xdsoft_select.xdsoft_yearselect{right:2px;}
+.xdsoft_datetimepicker  .xdsoft_label > .xdsoft_select > div > .xdsoft_option:hover{
+    color: #fff;
+    background: #ff8000;
+}
+.xdsoft_datetimepicker  .xdsoft_label > .xdsoft_select > div > .xdsoft_option{
+    padding:2px 10px 2px 5px;
+}
+.xdsoft_datetimepicker  .xdsoft_label > .xdsoft_select > div > .xdsoft_option.xdsoft_current{
+    background: #33AAFF;
+    box-shadow: #178FE5 0px 1px 3px 0px inset;
+    color:#fff;
+    font-weight: 700;
+}
+.xdsoft_datetimepicker  .xdsoft_month{
+    width:90px;
+    text-align:right;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar{
+    clear:both;
+}
+.xdsoft_datetimepicker  .xdsoft_year{
+    width:56px;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar table{
+    border-collapse:collapse;
+    width:100%;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td > div{
+    padding-right:5px;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar th{
+    height: 25px;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td,.xdsoft_datetimepicker  .xdsoft_calendar th{
+    width:14.2857142%;
+    text-align:center;
+    background: #F5F5F5;
+    border:1px solid #DDDDDD;
+    color: #666666;
+    font-size: 12px;
+    text-align: right;
+    padding:0px;
+    border-collapse:collapse;
+    cursor:pointer;
+    height: 25px;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar th{
+    background: #F1F1F1;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td.xdsoft_today{
+    color:#33AAFF;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td.xdsoft_default,
+.xdsoft_datetimepicker  .xdsoft_calendar td.xdsoft_current,
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_time_box >div >div.xdsoft_current{
+    background: #33AAFF;
+    box-shadow: #178FE5 0px 1px 3px 0px inset;
+    color:#fff;
+    font-weight: 700;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td.xdsoft_other_month,
+.xdsoft_datetimepicker  .xdsoft_calendar td.xdsoft_disabled,
+.xdsoft_datetimepicker  .xdsoft_time_box >div >div.xdsoft_disabled{
+    opacity:0.5;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td.xdsoft_other_month.xdsoft_disabled{
+    opacity:0.2;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td:hover,
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_time_box >div >div:hover{
+    color: #fff !important;
+    background: #ff8000 !important;
+    box-shadow: none !important;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar td.xdsoft_disabled:hover,
+.xdsoft_datetimepicker  .xdsoft_timepicker .xdsoft_time_box >div >div.xdsoft_disabled:hover{
+    color: inherit	!important;
+    background: inherit !important;
+    box-shadow: inherit !important;
+}
+.xdsoft_datetimepicker  .xdsoft_calendar th{
+    font-weight: 700;
+    text-align: center;
+    color: #999;
+    cursor:default;
+}
+.xdsoft_datetimepicker  .xdsoft_copyright{ color:#ccc !important; font-size:10px;clear:both;float:none;margin-left:8px;}
+.xdsoft_datetimepicker  .xdsoft_copyright a{ color:#eee !important;}
+.xdsoft_datetimepicker  .xdsoft_copyright a:hover{ color:#aaa !important;}
+.xdsoft_time_box{
+    position:relative;
+    border:1px solid #ccc;
+}
+.xdsoft_scrollbar >.xdsoft_scroller{
+    background:#ccc !important;
+    height:20px;
+    border-radius:3px;
+}
+.xdsoft_scrollbar{
+    position:absolute;
+    width:7px;
+    width:7px;
+    right:0px;
+    top:0px;
+    bottom:0px;
+    cursor:pointer;
+}
+.xdsoft_scroller_box{
+    position:relative;
+}
+
+/*选择商品*/
+.chooseSp {
+    text-align: center;
+    border: solid 1px #dce0e0;
+    border-radius: 3px;
+    color: #999999;
+    cursor: pointer;
+}
+.spList ul {
+    width: 242px;
+    padding-left: 25px;
+    max-height: 120px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.spList ul li{
+    width: 212px;
+    height: 30px;
+    line-height: 27px;
+    color: #17C5B3;
+    font-size: 13px;
+}
+.spList ul li label{
+    display: inline-block;
+    width: 175px;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.spList ul li span{
+    display: inline-block;
+    width: 30px;
+    line-height: 30px;
+    text-align: center;
+    float: right;
+    cursor: pointer;
+    display: none;
+    margin-right: 5px;
+}
+.spList ul li:hover{ background-color:#F0F5F2;}
+.spList ul li:hover span{ display: block;}
+
+/*产品（商品）选择*/
+.chooseProduce{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    z-index: 99;
+    width: 800px;
+    min-height: 450px;
+    background-color: #fff;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    display: none;
+}
+.cProduceHeader{
+    height: 50px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #DDDAD5;
+}
+.cProduceHeaderLeft{
+    line-height: 30px;
+    font-size: 16px;
+    color: #000000;
+    font-weight: 600;
+}
+.cProduceHeaderRight{ position: relative;}
+.cProduceHeaderRight .inputSearch{
+    border-right: none;
+    margin-right: 50px;
+    background-color: #F5F5F4;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.cProduceHeaderRight input[type=button]{
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    background-color: #0076DA;
+    border-color: #0076DA;
+}
+.cProduceHeaderRight input[type=button]:hover{
+    background-color: #0E83E5 !important;
+    border-color: #0E83E5 !important;
+}
+.cProduceHeaderRight .inputSearch:focus{
+    border: solid 1px #0076DA;
+    transition: all .2s ease;
+    -webkit-transition:  all .2s ease;
+}
+.cProduceMain{
+    width: 100%;
+    height: 320px;
+    padding: 10px;
+    position: relative;
+}
+.cProduceMain .cLoading{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: rgba(255,255,255,0.6);
+}
+.cProduceMain .cLoading img{
+    display: inline-block;
+    margin-top: 120px;
+}
+.cProduceMain li,.cProduceSelectedShow li{
+    float:left;
+    width: 33.3%;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding: 0 10px;
+}
+.cProduceMain li label{ display:block;}
+.cProduceSelectedShow{
+    width: 100%;
+    min-height: 30px;
+    background-color: #FBFBE3;
+    max-height: 60px;
+    overflow-y: auto;
+    padding: 0 10px;
+}
+.cProduceSelectedShow li{
+    width: auto;
+    height: 30px;
+    position: relative;
+}
+.cProduceSelectedShow li span{
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 14px;
+    height: 14px;
+    background: url(../img/iconsButton.png) no-repeat center;
+    -webkit-background-size: 400px 150px;
+    background-size: 400px 150px;
+    background-position: 0px -48px;
+     display: none;
+    cursor: pointer;
+}
+.cProduceSelectedShow li:hover span{ display:block;}
+.cProduceFooter{
+    width:100%;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+}
+.cProduceCancel,.cProduceCancel:focus{
+    background-color: transparent !important;
+    color: #c6244b !important;
+}
+.cProduceCancel:hover{
+    color: #ffffff !important;
+}
+.cProduceFooter{
+    font-size: 12px;
+}
+/*canvas相关*/
+.canvasShow{ position: relative;}
+.canvasy{
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+.canvasSpanShow{
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    padding-top: 33px;
+}
+.canvasSpanShow .perC{
+    font-size: 18px;
+    color: #ffffff;
+}
+.canvasSpanShow .perS{
+    font-size: 12px;
+    color: #D8D9DC;
+}
+/*折线图*/
+.dataShowLineChart{
+    height: 286px;
+    position: relative;
+    margin-top: 17px;
+}
+.dataShowLineChart .posA{
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 250px;
+    background-color: #E3E1DE;
+}
+.dataShowLineChart .posB{
+    position: absolute;
+    left: 0;
+    width: 830px;
+    height: 1px;
+    background-color: #E3E1DE;
+}
+.dataShowLineChart .posC{
+    position: absolute;
+    left: 840px;
+    font-size: 12px;
+    color: #666460;
+}
+.dataShowLineChart .pos0{ left:39px;}
+.dataShowLineChart .pos1{ left:164px;}
+.dataShowLineChart .pos2{ left:289px;}
+.dataShowLineChart .pos3{ left:414px;}
+.dataShowLineChart .pos4{ left:539px;}
+.dataShowLineChart .pos5{ left:664px;}
+.dataShowLineChart .pos6{ left:789px;}
+.dataShowLineChart .pos7{ top:0;}
+.dataShowLineChart .pos8{ top:50px;}
+.dataShowLineChart .pos9{ top:100px;}
+.dataShowLineChart .pos10{ top:150px;}
+.dataShowLineChart .pos11{ top:200px;}
+.dataShowLineChart .pos12{ top:-9px;}
+.dataShowLineChart .pos13{ top:41px;}
+.dataShowLineChart .pos14{ top:91px;}
+.dataShowLineChart .pos15{ top:141px;}
+.dataShowLineChart .pos16{ top:191px;}
+.dataShowLineChart .pos17{ top:241px;}
+.dataShowLineChart .timeSqu{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 830px;
+    height: 36px;
+    line-height: 36px;
+    border-top: 1px solid #343535;
+}
+.dataShowLineChart .timeSqu li,.posDataShow ul li{
+    float:left;
+    font-size: 12px;
+    color: #666460;
+    width: 125px;
+    text-align: center;
+}
+.posDataShow{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 250px;
+}
+.posDataShow ul{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.posDataShow ul li{
+    height:250px;
+    text-align: center;
+    position: relative;
+}
+.posDataShow ul li .dataLineImgShow{
+    position: absolute;
+    left: 50%;
+    top: 0;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background: url(../img/iconsButton.png) no-repeat center;
+    -webkit-background-size: 400px 150px;
+    background-size: 400px 150px;
+    background-position: -42px -103px;
+}
+.dataShowLineChart .floatLine{
+    position: absolute;
+    height: 1px;
+    width: 100px;
+    -webkit-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    transform-origin: 0 0;
+    background-color: #FFA63C;
+}

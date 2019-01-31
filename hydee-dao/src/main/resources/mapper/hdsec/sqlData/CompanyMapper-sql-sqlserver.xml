@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.hydee.hdsec.sqlDao.CompanyDao">
+	<resultMap id="rm" type="company">
+		<result property="customerId" jdbcType="VARCHAR" column="customer_id"/>
+		<result property="serverName" jdbcType="VARCHAR" column="server_name"/>
+		<result property="companyName" jdbcType="VARCHAR" column="company_name"/>
+		<result property="singleItemSwitch" jdbcType="VARCHAR" column="single_item_switch"/>
+		<result property="appHideDur" jdbcType="INTEGER" column="app_hide_dur"/>
+		<result property="serverUrl" jdbcType="VARCHAR" column="server_url"/>
+		<result property="verifyCode" jdbcType="VARCHAR" column="verify_code"/>
+		<result property="serverType" jdbcType="VARCHAR" column="server_type"/>
+		<result property="hType" jdbcType="VARCHAR" column="hType"/>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		customer_id,server_name,company_name
+	</sql>
+	<select id="listCompany" resultMap="rm">
+		select <include refid="Base_Column_List" />,single_item_switch,app_hide_dur,server_url,server_type,hType
+		from c_company
+	</select>
+
+	<select id="getCompanyByCustomerId" resultMap="rm" parameterType="java.lang.String">
+		select <include refid="Base_Column_List" />,single_item_switch,app_hide_dur,server_url,verify_code,hType,server_type
+		from c_company where customer_id = #{xmCustomerId}
+	</select>
+
+</mapper>
+

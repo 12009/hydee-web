@@ -1,0 +1,10 @@
+﻿@charset "utf-8";
+
+/* 效果CSS开始 */
+.msKeimgBox {overflow: hidden; position: relative;}
+.msKeimgBox ul { width: 50px; list-style:none;}
+.mskeLayBg { background: #000; width: 100%; position: absolute; left: 0px; top: 0px; z-index: 11; opacity: 0.2; filter: alpha(opacity=70); display: none; _display:none!important }
+.mskelayBox { height: 308px; width: 670px; margin-top: -150px; margin-left: -350px; position: fixed; left: 50%; top: 50%; border: 10px solid #FFF; z-index: 20; background: #FFF; display: none; _display:none!important }
+.mskeClaose { position: absolute; top: -17px; right: -17px; cursor: pointer; background:none; }
+.msKeimgBox ul li { float: left; height: 50px;  width: 50px; cursor: pointer; }
+/* 效果CSS结束 */

@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyTrainTaskDao" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="BaseResultMap" type="companyTrainTask" >
+    <id column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="like_num" property="likeNum" jdbcType="BIGINT" />
+    <result column="money_reward" property="moneyReward" jdbcType="DOUBLE" />
+    <result column="award_low" property="awardLow" jdbcType="DOUBLE" />
+    <result column="award_middle" property="awardMiddle" jdbcType="DOUBLE" />
+    <result column="award_high" property="awardHigh" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+    <result column="modified_id" property="modifiedId" jdbcType="BIGINT" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="train_fund" property="trainFund" jdbcType="DOUBLE" />
+    <result column="serve_charge" property="serveCharge" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="commission_type" property="commissionType" jdbcType="INTEGER" />
+    <result column="residue_money" property="residueMoney" jdbcType="DOUBLE" />
+    <result column="customerName" property="customerName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="CompanyTrainTaskMap" type="companyTrainTask" >
+    <id column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="like_num" property="likeNum" jdbcType="BIGINT" />
+    <result column="money_reward" property="moneyReward" jdbcType="DOUBLE" />
+    <result column="award_low" property="awardLow" jdbcType="DOUBLE" />
+    <result column="award_middle" property="awardMiddle" jdbcType="DOUBLE" />
+    <result column="award_high" property="awardHigh" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+    <result column="modified_id" property="modifiedId" jdbcType="BIGINT" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="train_fund" property="trainFund" jdbcType="DOUBLE" />
+    <result column="serve_charge" property="serveCharge" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="commission_type" property="commissionType" jdbcType="INTEGER" />
+    <result column="residue_money" property="residueMoney" jdbcType="DOUBLE" />
+    <result column="userCount" property="userCount" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="CompanyTrainClassTaskListMap" type="companyTrainTask" extends="CompanyTrainTaskMap">
+    <result column="commentCount" property="commentCount" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="CompanyTrainClassTaskListMap2" type="companyTrainTask" extends="CompanyTrainClassTaskListMap">
+    <result column="isActivation" property="isActivation" jdbcType="INTEGER" />
+  </resultMap>
+
+
+  <resultMap id="TrainClassTaskListMap" type="companyTrainTask" extends="CompanyTrainTaskMap">
+    <result column="whereFund" property="whereFund" jdbcType="DOUBLE" />
+    <result column="whereRedMoney" property="whereRedMoney" jdbcType="DOUBLE" />
+    <result column="customerName" property="customerName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="TrainTaskSecListMap" type="companyTrainTask" extends="TrainClassTaskListMap">
+    <result column="isParticipation" property="isParticipation" jdbcType="INTEGER" />
+    <result column="isActivation" property="isActivation" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="TrainTaskAppListMap" type="companyTrainTask" extends="TrainClassTaskListMap">
+    <result column="customerCount" property="customerCount" jdbcType="INTEGER" />
+    <result column="joinStatus" property="joinStatus" jdbcType="INTEGER" />
+    <result column="commentCount" property="commentCount" jdbcType="INTEGER" />
+  </resultMap>
+
+
+
+  <resultMap id="CompanyTrainClassTaskMap" type="companyTrainClassTask" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="class_id" property="classId" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+  </resultMap>
+
+  <resultMap id="CompanyTrainTaskThumbnailMap" type="companyTrainTaskThumbnail" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+  </resultMap>
+
+  <resultMap id="CompanyTrainTaskCustomerMap" type="companyTrainTaskCustomer" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="is_participation" property="isParticipation" jdbcType="INTEGER" />
+    <result column="is_activation" property="isActivation" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="CompanyTrainTaskCommentMap" type="companyTrainTaskComment" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="from_user_id" property="fromUserId" jdbcType="VARCHAR" />
+    <result column="from_user_name" property="fromUserName" jdbcType="VARCHAR" />
+    <result column="to_user_id" property="toUserId" jdbcType="VARCHAR" />
+    <result column="to_user_name" property="toUserName" jdbcType="VARCHAR" />
+    <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="companyTrainTaskLockMoneyMap" type="companyTrainTaskLockMoney" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="lock_money" property="lockMoney" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="companyTrainTaskUserMap" type="companyTrainTaskUser" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="red_money" property="redMoney" jdbcType="DOUBLE" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="correct" property="correct" jdbcType="DOUBLE" />
+  </resultMap>
+
+  <!--<sql id="Base_Column_List" >-->
+  <!--task_id, title, like_num, money_reward, award_low, award_middle, award_high, create_time,-->
+  <!--create_id, modified_time, modified_id, customer_id, start_time, end_time, train_fund,-->
+  <!--serve_charge,-->
+  <!--case-->
+  <!--when status = 2 and residue_money = 0 -->
+  <!--and  (select count(1) from ct_company_train_task_lock_money lockM where lockM.task_id=ctt.task_id and ( lockM.lock_money is null or lockM.status = 1)) = 0 -->
+  <!--then 4-->
+  <!--when status = 2  and start_time &lt; SYSDATE() and end_time > SYSDATE()-->
+  <!--then 3-->
+  <!--when status = 2  and end_time &lt; SYSDATE()-->
+  <!--then 4-->
+  <!--when status = 1-->
+  <!--then 1-->
+  <!--else 2-->
+  <!--end as status , commission_type, residue_money-->
+  <!--</sql>-->
+
+  <sql id="Column_List" >
+    ctt.task_id, ctt.title, ctt.like_num, ctt.money_reward, ctt.award_low, ctt.award_middle, ctt.award_high, ctt.create_time,
+    ctt.create_id, ctt.modified_time, ctt.modified_id, ctt.customer_id, ctt.start_time, ctt.end_time, ctt.train_fund,
+    case when ctt.commission_type = 1 then org.serve_charge
+    when ctt.commission_type = 2 then org.serve_charge_percent  end as serveCharge ,
+    case
+    when ctt.status = 2 and ctt.residue_money = 0
+    and  (select count(1) from ct_company_train_task_lock_money lockM where lockM.task_id=ctt.task_id and ( lockM.lock_money is null or lockM.status = 1)) = 0
+	then 4
+    when ctt.status = 2  and ctt.start_time &lt; SYSDATE() and ctt.end_time > SYSDATE()
+    then 3
+    when ctt.status = 2  and ctt.end_time &lt; SYSDATE()
+    then 4
+    when ctt.status = 1
+    then 1
+    else 2
+    end as status , ctt.commission_type, ctt.residue_money
+  </sql>
+
+  <!-- 分页查询语句 -->
+  <select id="queryTaskListPage" resultMap="TrainClassTaskListMap" parameterType="companyTrainTask" >
+    select
+    <include refid = "Column_List" />,
+    (select count(1) from ct_company_train_task_customer ttc
+    where ttc.task_id = ctt.task_id ) as customerCount,
+    (select count(1) from ct_company_train_task_customer tc
+    where  is_activation = 1 and tc.task_id = ctt.task_id) as joinCustomerCount,
+    (select count(1) from ct_company_train_task_user tu
+    where tu.task_id = ctt.task_id) as userCount,
+    (select count(1) from u_share ment
+    where ment.source_id = ctt.task_id and source_type = 3) as commentCount
+    from ct_company_train_task ctt
+    LEFT JOIN ct_company_organization org
+    ON org.customer_id = ctt.customer_id
+    where 1=1
+    <if test = "title != null">
+      <choose>
+        <when test="findType == null">
+            and ctt.title like concat('%', #{title}, '%')
+        </when>
+        <otherwise>
+            and (ctt.title like concat('%', #{title}, '%') OR org.org_name like concat('%', #{title}, '%'))
+        </otherwise>
+      </choose>
+    </if>
+    <if test = "customerId != null and customerId != ''">
+      and ctt.customer_id = #{customerId,jdbcType=BIGINT}
+    </if>
+    order by ctt.create_time DESC
+  </select>
+
+  <!-- 分页查询   -->
+  <select id="queryTask2ListPage" resultMap="BaseResultMap" parameterType="companyTrainTask" >
+
+    SELECT
+    <include refid = "Column_List" />,
+    org.org_name as customerName
+    FROM
+    ct_company_train_task ctt
+    INNER JOIN ct_company_user users ON ctt.create_id = users.id
+    LEFT JOIN ct_company_organization org
+    on ctt.customer_id = org.customer_id
+    where
+    1=1
+    <if test = "title != null ">
+      and ctt.title like concat('%', #{title}, '%')
+    </if>
+    <if test = "createId != null ">
+      and ctt.create_id = #{createId,jdbcType=BIGINT}
+    </if>
+    and ctt.residue_money != 0
+  </select>
+
+  <!-- 查询任务列表，数据传输给小蜜后台 -->
+  <select id="queryTaskInterfaceListPage" resultMap="TrainTaskSecListMap" parameterType="companyTrainTask" >
+    select
+    <include refid="Column_List" />,
+    org.org_name as customerName,
+    tCust.is_participation as isParticipation,
+    tCust.is_activation as isActivation,
+    (select count(1) from ct_company_train_task_user tu
+    where tu.task_id = ctt.task_id and tu.customer_id = #{secCustomerId}) as userCount,
+    (select sum(account.train_fund) from ct_company_account_where account
+    where account.task_id = ctt.task_id and account.chain_customer_id = #{secCustomerId}) as whereFund,
+    (select sum(account.red_money) from ct_company_account_where account
+    where account.task_id = ctt.task_id and account.dict_id = 3 and account.chain_customer_id = #{secCustomerId}) as whereRedMoney
+    from ct_company_train_task ctt
+    LEFT JOIN ct_company_train_task_customer tCust
+    on tCust.task_id = ctt.task_id
+    LEFT JOIN ct_company_organization org
+    on ctt.customer_id = org.customer_id
+    where 1=1
+    <if test = "secCustomerId != null ">
+      and tCust.customer_id = #{secCustomerId} and tCust.is_stores = 0
+    </if>
+    order by ctt.create_time DESC
+  </select>
+
+  <!-- APP厂商接口显示 -->
+  <select id="queryTaskAppListPage" resultMap="TrainTaskAppListMap" parameterType="companyTrainTask" >
+    select * from (
+    select
+    <include refid="Column_List"/>,
+    org.org_name as customerName,
+    (select count(1) from ct_company_train_task_user tu
+    where tu.task_id = ctt.task_id) as userCount,
+    (select sum(account.train_fund) from ct_company_account_where account
+    where account.task_id = ctt.task_id) as whereFund,
+    (select sum(account.red_money) from ct_company_account_where account
+    where account.task_id = ctt.task_id and account.dict_id = 3) as whereRedMoney,
+    IFNULL(
+    (select count(tUser.id) from ct_company_train_task_user tUser
+    where ctt.task_id = tUser.task_id AND tUser.user_id = #{userId} AND tUser.customer_id = #{secCustomerId}),0) as
+    joinStatus,
+    (select count(1) from ct_company_train_task_customer ttc
+    where ttc.task_id = ctt.task_id ) as customerCount,
+    (select count(1) from u_share ment
+    where ment.source_id = ctt.task_id and source_type = 3) as commentCount
+    from ct_company_train_task ctt
+    LEFT JOIN ct_company_train_task_customer tCust
+    on tCust.task_id = ctt.task_id
+    LEFT JOIN ct_company_organization org
+    on ctt.customer_id = org.customer_id
+    where
+    ((tCust.is_stores = 0 and tCust.customer_id = #{secCustomerId})
+    or
+    (tCust.is_stores = 1 and tCust.customer_id = #{secCustomerId} and tCust.busno = #{busno}))
+    and tCust.is_participation = 1
+    and tCust.is_activation = 1
+    order by status ,joinStatus ,ctt.create_time DESC
+    ) tb where status &lt;> 1 and status &lt;> 2
+  </select>
+
+  <!--&lt;!&ndash; 查询锁金额所有数据 &ndash;&gt;-->
+  <!--<select id="selectLockMoney" resultMap="companyTrainTaskLockMoneyMap">-->
+  <!--select-->
+  <!--id, lock_money, create_time, task_id, customer_id, user_id, status-->
+  <!--from ct_company_train_task_lock_money where status = 1-->
+  <!--</select>-->
+
+  <!-- 根据customerId和userId查询出锁表 -->
+  <select id="selectLockMoneyById" resultMap="companyTrainTaskLockMoneyMap" parameterType="java.util.Map">
+    select
+    id, lock_money, create_time, task_id, customer_id, user_id, status
+    from ct_company_train_task_lock_money
+    where 1 = 1
+    <if test = "customerId != null ">
+      and customer_id = #{customerId}
+    </if>
+    <if test = "userId != null ">
+      and user_id = #{userId}
+    </if>
+    <if test = "taskId != null ">
+      and task_id = #{taskId}
+    </if>
+    <if test = "status != null ">
+      and status = #{status}
+    </if>
+  </select>
+
+  <!-- 根据customerId和userId查询出锁表 -->
+  <!--<select id="selectLockMoneyByTaskId" resultMap="companyTrainTaskLockMoneyMap" parameterType="java.lang.Long">-->
+  <!--select-->
+  <!--id, lock_money, create_time, task_id, customer_id, user_id-->
+  <!--from ct_company_train_task_lock_money-->
+  <!--where task_id = #{taskId}-->
+  <!--</select>-->
+
+  <!-- 根据状态查看任务 -->
+  <select id="queryTaskByStatus" resultMap="CompanyTrainTaskMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Column_List" />
+    from ct_company_train_task ctt
+    LEFT JOIN ct_company_organization org
+    ON org.customer_id = ctt.customer_id
+    where ctt.status = #{status}
+  </select>
+
+
+  <!-- 查看冻结余额 -->
+  <select id="getTaskFrozenCharge" resultType="java.lang.Double" parameterType="java.lang.String">
+    select
+    IFNULL(SUM(residue_money),0)
+    from ct_company_train_task ctt
+    where ctt.customer_id = #{customerId}
+  </select>
+
+
+  <!-- 根据ID查询出任务 -->
+  <select id="selectTaskById" resultMap="CompanyTrainClassTaskListMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Column_List" />,
+    (select count(1) from u_share ment
+    where ment.source_id = ctt.task_id and source_type = 3) as commentCount
+    from ct_company_train_task ctt
+    LEFT JOIN ct_company_organization org
+    ON org.customer_id = ctt.customer_id
+    where ctt.task_id = #{taskId,jdbcType=BIGINT}
+  </select>
+
+  <!-- 查询任务是否被开启 -->
+  <select id="selectTaskByCidAndTaskId" resultMap="CompanyTrainClassTaskListMap2" parameterType="java.util.Map" >
+    select
+    <include refid="Column_List" />,
+    (select tCust.is_activation from ct_company_train_task_customer tCust
+    where tCust.task_id = #{taskId} and tCust.customer_id = #{customerId}) AS isActivation,
+    (select count(1) from u_share ment
+    where ment.source_id = ctt.task_id and source_type = 3) as commentCount
+    from ct_company_train_task ctt
+    LEFT JOIN ct_company_organization org
+    ON org.customer_id = ctt.customer_id
+    where ctt.task_id = #{taskId}
+  </select>
+
+  <!-- 根据ID查询出任务 -->
+  <select id="selectTaskDetailById" resultMap="CompanyTrainClassTaskListMap" parameterType="java.util.Map" >
+    select
+    <include refid="Column_List" />,
+    (select count(1) from u_share ment
+    where ment.source_id = ctt.task_id and source_type = 3) as commentCount,
+    IFNULL(
+    (select count(tUser.id) from ct_company_train_task_user tUser
+    where ctt.task_id = tUser.task_id AND tUser.user_id = #{userId} AND tUser.customer_id = #{secCustomerId}),0) as joinStatus
+    from ct_company_train_task ctt
+    LEFT JOIN ct_company_organization org
+    ON org.customer_id = ctt.customer_id
+    where ctt.task_id = #{taskId,jdbcType=BIGINT}
+  </select>
+
+  <!-- 根据课件ID查询出所属任务 -->
+  <select id="selectTaskByClassId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid = "Column_List" />
+    from ct_company_train_class tclass
+    INNER JOIN ct_company_train_class_task ctask
+    on ctask.class_id = tclass.class_id
+    INNER JOIN ct_company_train_task ctt
+    on ctask.task_id = ctt.task_id
+    LEFT JOIN ct_company_organization org
+    ON org.customer_id = ctt.customer_id
+    WHERE tclass.class_id = #{classId}
+  </select>
+
+  <!-- 根据任务ID查询出任务课件关联 -->
+  <select id="selectClassTaskByTaskId" resultMap="CompanyTrainClassTaskMap" parameterType="java.lang.Long" >
+    select
+    id, class_id, task_id
+    from ct_company_train_class_task
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </select>
+
+  <!-- 根据任务ID查询出缩略图 -->
+  <select id="selectThumbnailByTaskId" resultMap="CompanyTrainTaskThumbnailMap" parameterType="java.lang.Long" >
+    select
+    id, img_url, task_id
+    from ct_company_train_task_thumbnail
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </select>
+
+  <!-- 根据任务ID查询出指定连锁 -->
+  <select id="selectCustomerByTaskId" resultMap="CompanyTrainTaskCustomerMap" parameterType="java.lang.Long" >
+    select
+    id, customer_id, customer_name, task_id, is_participation, is_activation,is_stores
+    from ct_company_train_task_customer
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </select>
+
+  <!-- 根据任务ID查询评论 -->
+  <select id="selectCommentByTaskIdListPage" resultMap="CompanyTrainTaskCommentMap" parameterType="companyTrainTaskComment" >
+    select
+    id, task_id, content, from_user_id, from_user_name, to_user_id, to_user_name, comment_time
+    from ct_company_train_task_comment
+    where task_id = #{taskId,jdbcType=BIGINT}
+    ORDER BY comment_time DESC
+  </select>
+
+  <!-- 查询用户是否第一次评论该任务 -->
+  <select id="selectCommentByTaskIdAndUserId" resultType="java.lang.Integer" parameterType="companyTrainTaskComment" >
+    select
+    count(1)
+    from ct_company_train_task_comment
+    where task_id = #{taskId,jdbcType=BIGINT} and from_user_id = #{fromUserId}
+  </select>
+
+  <!-- 根据customerId和userId查询出是否参加任务 -->
+  <select id="selectTaskUserByCidAndUserId" resultMap="companyTrainTaskUserMap" parameterType="companyTrainTaskUser" >
+    select
+    id, user_id, user_name, customer_id, task_id, create_time, red_money, phone, correct
+    from ct_company_train_task_user
+    where customer_id = #{customerId} and user_id = #{userId} and task_id = #{taskId}
+  </select>
+
+  <!-- 根据customerId和userId查询出是否有未参加的任务 -->
+  <select id="getRedByCidAndUserId" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(1) from ct_company_train_task_customer tc
+    LEFT JOIN ct_company_train_task tt ON tt.task_id = tc.task_id
+    left join ct_company_train_task_user tu on tc.task_id = tu.task_id and tu.user_id = #{userId}
+    where
+    tu.user_id is null
+    and tc.customer_id = #{customerId}
+    and tc.is_activation = 1
+    and SYSDATE() BETWEEN tt.start_time and tt.end_time and status = 2
+  </select>
+
+  <!-- 查询是否点赞 -->
+  <select id="selectTaskLikeById" resultType="java.lang.Integer" parameterType="companyTrainTaskLike" >
+    select
+    count(1)
+    from ct_company_train_task_like
+    where customer_id = #{customerId} and user_id = #{userId} and task_id = #{taskId}
+  </select>
+
+  <!-- 查询累计人数 -->
+  <select id="selectTaskUserAccount" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    SELECT count(1) FROM ct_company_train_task ctask
+		INNER JOIN ct_company_train_task_user cUser ON ctask.task_id = cUser.task_id
+		where ctask.customer_id = #{customerId}
+  </select>
+
+  <!-- 删除任务 -->
+  <delete id="deleteTaskById" parameterType="java.lang.Long" >
+    delete from ct_company_train_task
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- 删除缩略图 -->
+  <delete id="deleteThumbnailByTaskId" parameterType="java.lang.Long" >
+    delete from ct_company_train_task_thumbnail
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- 删除连锁 -->
+  <delete id="deleteCustomerByTaskId" parameterType="java.lang.Long" >
+    delete from ct_company_train_task_customer
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- 删除任务和课件关联 -->
+  <delete id="deleteClassAndTaskByTaskId" parameterType="java.lang.Long">
+    DELETE FROM ct_company_train_class_task WHERE task_id = #{taskId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- 删除锁定的金额 -->
+  <delete id="deleteLockMoney" parameterType="java.lang.Long" >
+    delete from ct_company_train_task_lock_money
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <!-- 新增缩略图 -->
+  <insert id="insertThumbnail" parameterType="list" >
+    insert into ct_company_train_task_thumbnail (img_url, task_id
+    ) values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.imgUrl}, #{item.taskId})
+    </foreach>
+  </insert>
+
+  <!-- 新增连锁 -->
+  <insert id="insertTaskCustomer" parameterType="list" >
+    insert into ct_company_train_task_customer (customer_id, customer_name,task_id, is_participation, is_activation,is_stores,busno)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.customerId}, #{item.customerName},#{item.taskId}, 1, 1,#{item.isStores},#{item.busno})
+    </foreach>
+  </insert>
+
+  <!-- 新增锁定红包 -->
+  <insert id="insertLockMoney" parameterType="companyTrainTaskLockMoney" >
+    insert into ct_company_train_task_lock_money
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lockMoney != null" >
+        lock_money,
+      </if>
+      create_time,
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      status
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lockMoney != null" >
+        #{lockMoney,jdbcType=DOUBLE},
+      </if>
+      sysdate(),
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null" >
+        #{customerId},
+      </if>
+      <if test="userId != null" >
+        #{userId},
+      </if>
+      1
+    </trim>
+  </insert>
+
+
+  <!-- 新增点赞人 -->
+  <insert id="insertTaskLike" parameterType="companyTrainTaskLike" >
+    insert into ct_company_train_task_like
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      sysdate()
+    </trim>
+  </insert>
+
+
+  <!-- 修改参加连锁状态 -->
+  <update id="updateTaskCustomer" parameterType="companyTrainTaskCustomer">
+    update ct_company_train_task_customer
+    <set >
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="isParticipation != null" >
+        is_participation = #{isParticipation,jdbcType=INTEGER},
+      </if>
+      <if test="isActivation != null" >
+        is_activation = #{isActivation,jdbcType=INTEGER},
+      </if>
+      <if test="isStores != null" >
+        is_stores = #{isStores,jdbcType=INTEGER},
+      </if>
+      <if test="busno != null" >
+        busno = #{busno},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=BIGINT} and customer_id = #{customerId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 新增任务课件关联表 -->
+  <insert id="insertClassTask" parameterType="companyTrainClassTask" >
+    insert into ct_company_train_class_task (class_id, task_id
+    )
+    values (#{classId,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}
+    )
+  </insert>
+
+  <!-- 新增评论 -->
+  <insert id="insertComment" parameterType="companyTrainTaskComment" >
+    insert into ct_company_train_task_comment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="contentStore != null" >
+        content,
+      </if>
+      <if test="fromUserId != null" >
+        from_user_id,
+      </if>
+      <if test="fromUserName != null" >
+        from_user_name,
+      </if>
+      <if test="toUserId != null" >
+        to_user_id,
+      </if>
+      <if test="toUserName != null" >
+        to_user_name,
+      </if>
+      comment_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="contentStore != null" >
+        #{contentStore,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserId != null" >
+        #{fromUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserName != null" >
+        #{fromUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserId != null" >
+        #{toUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserName != null" >
+        #{toUserName,jdbcType=VARCHAR},
+      </if>
+      sysdate()
+    </trim>
+  </insert>
+
+  <!-- 新增参加人员 -->
+  <insert id="insertTaskUser" parameterType="companyTrainTaskUser" >
+    insert into ct_company_train_task_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      create_time,
+      <if test="redMoney != null" >
+        red_money,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="correct != null" >
+        correct,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="chainCustomerId != null" >
+        #{chainCustomerId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      sysdate(),
+      <if test="redMoney != null" >
+        #{redMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="correct != null" >
+        #{correct,jdbcType=DOUBLE},
+      </if>
+      <if test="type != null" >
+        #{type},
+      </if>
+    </trim>
+  </insert>
+
+  <!-- 新增任务 -->
+  <insert id="insertTask" parameterType="companyTrainTask"  useGeneratedKeys="true" keyProperty="taskId">
+    insert into ct_company_train_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="likeNum != null" >
+        like_num,
+      </if>
+      <if test="moneyReward != null" >
+        money_reward,
+      </if>
+      <if test="awardLow != null" >
+        award_low,
+      </if>
+      <if test="awardMiddle != null" >
+        award_middle,
+      </if>
+      <if test="awardHigh != null" >
+        award_high,
+      </if>
+      create_time,
+      <if test="createId != null" >
+        create_id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="trainFund != null" >
+        train_fund,
+      </if>
+      <if test="serveCharge != null" >
+        serve_charge,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="commissionType != null" >
+        commission_type,
+      </if>
+      <if test="residueMoney != null" >
+        residue_money,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="likeNum != null" >
+        #{likeNum,jdbcType=BIGINT},
+      </if>
+      <if test="moneyReward != null" >
+        #{moneyReward,jdbcType=DOUBLE},
+      </if>
+      <if test="awardLow != null" >
+        #{awardLow,jdbcType=DOUBLE},
+      </if>
+      <if test="awardMiddle != null" >
+        #{awardMiddle,jdbcType=DOUBLE},
+      </if>
+      <if test="awardHigh != null" >
+        #{awardHigh,jdbcType=DOUBLE},
+      </if>
+      sysdate(),
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="trainFund != null" >
+        #{trainFund,jdbcType=DOUBLE},
+      </if>
+      <if test="serveCharge != null" >
+        #{serveCharge,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="commissionType != null" >
+        #{commissionType,jdbcType=INTEGER},
+      </if>
+      <if test="residueMoney != null" >
+        #{residueMoney,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateTaskById" parameterType="companyTrainTask" >
+    update ct_company_train_task
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="likeNum != null" >
+        like_num = #{likeNum,jdbcType=BIGINT},
+      </if>
+      <if test="moneyReward != null" >
+        money_reward = #{moneyReward,jdbcType=DOUBLE},
+      </if>
+      <if test="awardLow != null" >
+        award_low = #{awardLow,jdbcType=DOUBLE},
+      </if>
+      <if test="awardMiddle != null" >
+        award_middle = #{awardMiddle,jdbcType=DOUBLE},
+      </if>
+      <if test="awardHigh != null" >
+        award_high = #{awardHigh,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createId != null" >
+        create_id = #{createId,jdbcType=BIGINT},
+      </if>
+      modified_time = sysdate(),
+      <if test="modifiedId != null" >
+        modified_id = #{modifiedId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="trainFund != null" >
+        train_fund = #{trainFund,jdbcType=DOUBLE},
+      </if>
+      <if test="serveCharge != null" >
+        serve_charge = #{serveCharge,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="commissionType != null" >
+        commission_type = #{commissionType,jdbcType=INTEGER},
+      </if>
+      <if test="residueMoney != null" >
+        residue_money = #{residueMoney,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 修改任务课件关联 -->
+  <update id="updateClassTask" parameterType="companyTrainClassTask">
+    update ct_company_train_class_task
+    <set >
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=BIGINT},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=BIGINT}
+  </update>
+
+  <!-- 更新锁定金额 -->
+  <update id="updateLockMoney" parameterType="companyTrainTaskLockMoney" >
+    update ct_company_train_task_lock_money
+    <set >
+      <if test="lockMoney != null" >
+        lock_money = #{lockMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId},
+      </if>
+      <if test="status != null" >
+        status = #{status},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

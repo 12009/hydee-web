@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://www.springframework.org/schema/tx
+       					http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        http://www.springframework.org/schema/aop
+  						http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+	<bean id ="taskShceduler" class= "com.hydee.hdsec.controller.interfaceSec.TrainTaskShceduler">
+	</bean >
+	<!--  生产者Task -->
+	<bean id ="trainTaskClientTask"
+		  class= "org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name ="targetObject" ref= "taskShceduler" /><!-- 关联的bean -->
+		<property name ="targetMethod" value= "updateTaskStatus" /><!-- 关联的bean的方法 -->
+		<!-- false表示等上一个任务执行完后再开启新的任务 -->
+		<property name ="concurrent" value="false" /><!-- 配置为false不允许任务并发执行 -->
+	</bean>
+
+	<!-- 每个任务独有的触发器:每隔2分钟执行一次 -->
+	<bean id ="trainTaskClientTrigger" class= "org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+		<property name ="jobDetail" ref="trainTaskClientTask" />
+		<property name ="cronExpression" >
+			<value>0 0/2 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id ="lockMoneyClientTask"
+		  class= "org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name ="targetObject" ref= "taskShceduler" /><!-- 关联的bean -->
+		<property name ="targetMethod" value= "deblockMoney" /><!-- 关联的bean的方法 -->
+		<!-- false表示等上一个任务执行完后再开启新的任务 -->
+		<property name ="concurrent" value="false" /><!-- 配置为false不允许任务并发执行 -->
+	</bean>
+	<!-- 每个任务独有的触发器:每隔8分钟执行一次 -->
+	<bean id ="lockMoneyClientTrigger" class= "org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+		<property name ="jobDetail" ref="lockMoneyClientTask" />
+		<property name ="cronExpression" >
+			<value>0 0/2 * * * ?</value>
+		</property>
+	</bean>
+
+	<!-- 定时器bean -->
+	<bean id ="scheduler"
+		  class= "org.springframework.scheduling.quartz.SchedulerFactoryBean" >
+		<property name ="triggers">
+			<list >
+				<!--<ref bean="trainTaskClientTrigger"/> &lt;!&ndash; 是否启用定时任务 &ndash;&gt;-->
+				<ref bean="lockMoneyClientTrigger"/> <!-- 是否启用定时任务 -->
+			</list>
+		</property>
+	</bean >
+
+</beans>

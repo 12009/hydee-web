@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.hydee.hdsec.dao.ShareDao">
+	<!-- 配置二级缓存 -->
+	<!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+	<!-- 分享实体类映射 -->
+	<resultMap id="rmShare" type="share">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="title" jdbcType="VARCHAR" column="title"/>
+		<result property="content" jdbcType="VARCHAR" column="content"/>
+		<result property="shareTime" jdbcType="VARCHAR" column="share_time"/>
+		<result property="isPublished" jdbcType="INTEGER" column="is_published"/>
+		<result property="sourceType" jdbcType="INTEGER" column="source_type"/>
+		<result property="sourceId" jdbcType="BIGINT" column="source_id"/>
+		<result property="customerId" jdbcType="VARCHAR" column="customer_id"/>
+		<result property="userId" jdbcType="VARCHAR" column="user_id"/>
+		<result property="userName" jdbcType="VARCHAR" column="user_name"/>
+		<result property="busNo" jdbcType="VARCHAR" column="bus_no"/>
+		<result property="busName" jdbcType="VARCHAR" column="bus_name"/>
+		<result property="headImg" jdbcType="VARCHAR" column="head_img"/>
+		<collection property="likers" select="selectLikersByShareId" column="id" ofType="shareLiker" />
+		<collection property="comments" select="selectCommentsByShareId" column="id" ofType="shareComment" />
+		<collection property="shareImgs" select="selectImgsByShareId" column="id" ofType="shareImg" />
+	</resultMap>
+	<!-- 分享对应评论类映射 -->
+	<resultMap id="rmShareComment" type="shareComment">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="shareId" jdbcType="BIGINT" column="share_id"/>
+		<result property="observerId" jdbcType="VARCHAR" column="observer_id"/>
+		<result property="targetId" jdbcType="VARCHAR" column="target_id"/>
+		<result property="publishTime" jdbcType="VARCHAR" column="publish_time"/>
+		<result property="content" jdbcType="VARCHAR" column="content"/>
+		<result property="observerName" jdbcType="VARCHAR" column="observer_name"/>
+		<result property="targetName" jdbcType="VARCHAR" column="target_name"/>
+		<result property="customerId" jdbcType="VARCHAR" column="customer_id"/>
+		<result property="headImg" jdbcType="VARCHAR" column="head_img"/>
+	</resultMap>
+	<!-- 分享点赞人员映射 -->
+	<resultMap id="rmShareLiker" type="shareLiker">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="shareId" jdbcType="BIGINT" column="share_id"/>
+		<result property="customerId" jdbcType="VARCHAR" column="customer_id"/>
+		<result property="userId" jdbcType="VARCHAR" column="user_id"/>
+	</resultMap>
+	<!-- 分享图片映射 -->
+	<resultMap id="rmShareImg" type="shareImg">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="shareId" jdbcType="BIGINT" column="share_id"/>
+		<result property="imgLink" jdbcType="VARCHAR" column="img_link"/>
+	</resultMap>
+	
+	<insert id="insertShare" parameterType="share">
+		insert into u_share(title,content,share_time,is_published,source_type,source_id,customer_id,user_id,user_name,bus_name,head_img)
+		values (#{title},#{contentSource},sysdate(),#{isPublished},#{sourceType},#{sourceId},#{customerId},#{userId},#{userName},#{busName},#{headImg})
+	</insert>
+	
+	<select id="selectLikersByShareId" parameterType="string" resultMap="rmShareLiker">
+		select * from u_share_likes where share_id = #{shareId}
+	</select>
+	
+	<select id="selectCommentsByShareId" parameterType="string" resultMap="rmShareComment">
+		select * from u_share_comments where share_id = #{shareId} order by publish_time
+	</select>
+	
+	<select id="selectImgsByShareId" parameterType="string" resultMap="rmShareImg">
+		select * from u_share_img where share_id = #{shareId}
+	</select>
+	
+	<insert id="saveShareImgs" parameterType="list">
+		insert into u_share_img(share_id, img_link) values
+		<foreach item="item" collection="list" separator=",">
+		    (#{item.shareId}, #{item.imgLink})
+		</foreach>
+	</insert>
+
+	<!-- and ( s.customer_id = #{customerId} or s.is_published = '1' )  -->
+	<select id="listAllSharesListPage" parameterType="share" resultMap="rmShare">
+		select s.*
+		from u_share s
+		where
+		s.source_type = #{sourceType} and s.source_id = #{sourceId} ORDER BY share_time DESC
+	</select>
+	
+	<select id="selectShareLiker" parameterType="shareLiker" resultMap="rmShareLiker">
+		select * from u_share_likes where share_id = #{shareId} and user_id = #{userId}
+	</select>
+	
+	<insert id="insertComment" useGeneratedKeys="true" keyProperty="id" parameterType="shareComment">
+		insert into u_share_comments(share_id, observer_id, target_id, publish_time, content, observer_name, target_name, customer_id,head_img)
+		values(#{shareId}, #{observerId}, #{targetId}, sysdate(), #{contentSource}, #{observerName}, #{targetName}, #{customerId},#{headImg})
+	</insert>
+	
+	<insert id="insertShareLiker" parameterType="shareLiker">
+		insert into u_share_likes(share_id, user_id, customer_id)
+		values (#{shareId}, #{userId}, #{customerId})
+	</insert>
+	
+	<delete id="deleteShareLiker" parameterType="shareLiker">
+		delete from u_share_likes where share_id = #{shareId} and user_id = #{userId} and customer_id = #{customerId}
+	</delete>
+	
+	<select id="getFirstShare" parameterType="share" resultType="share">
+		select * from u_share where customer_id = #{customerId} and user_id = #{userId} and source_type = #{sourceType} and source_id = #{sourceId} order by share_time desc limit 1
+	</select>
+</mapper>

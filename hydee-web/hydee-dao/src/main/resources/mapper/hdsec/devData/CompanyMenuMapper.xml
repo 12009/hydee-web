@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="companyMenuMapper" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="companyMenuMap" type="companyMenu" >
+    <id column="menu_id" property="menuId" jdbcType="BIGINT" />
+    <result column="menu_pid" property="menuPid" jdbcType="BIGINT" />
+    <result column="menu_code" property="menuCode" jdbcType="VARCHAR" />
+    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+    <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+    <result column="is_show" property="isShow" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    menu_id, menu_pid, menu_code, menu_name, menu_url, is_show
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="companyMenuMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from ct_company_menu
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from ct_company_menu
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="companyMenu" >
+    insert into ct_company_menu (menu_id,menu_pid,menu_code,menu_name,menu_url,is_show)
+    values (#{menuId,jdbcType=BIGINT}, #{menuPid,jdbcType=BIGINT}, #{menuCode,jdbcType=VARCHAR}, 
+      #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, #{isShow,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="companyMenu" >
+    update ct_company_menu
+    <set >
+      <if test="menuPid != null" >
+        menu_pid = #{menuPid,jdbcType=BIGINT},
+      </if>
+      <if test="menuCode != null" >
+        menu_code = #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        menu_name = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null" >
+        menu_url = #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isShow != null" >
+        is_show = #{isShow,jdbcType=INTEGER},
+      </if>
+    </set>
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="companyMenu" >
+    update ct_company_menu
+    set menu_pid = #{menuPid,jdbcType=BIGINT},
+      menu_code = #{menuCode,jdbcType=VARCHAR},
+      menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_url = #{menuUrl,jdbcType=VARCHAR},
+      is_show = #{isShow,jdbcType=INTEGER}
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </update>
+  
+  <select id="listByRoleId" resultMap="companyMenuMap" parameterType="long">
+  	select <include refid="Base_Column_List" /> from ct_company_menu where 1=1 
+  	<if test="_parameter > 0">
+	  	and menu_id in (
+	  		select menu_id from ct_company_roleresop where role_id = #{roleId}
+	  	)
+  	</if>
+  	order by menu_pid,menu_code
+  </select>
+</mapper>

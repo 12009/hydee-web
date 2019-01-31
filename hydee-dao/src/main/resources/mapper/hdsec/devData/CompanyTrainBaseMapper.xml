@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyTrainBaseDao" >
+  <resultMap id="BaseResultMap" type="companyTrainBase" >
+    <id column="base_id" property="baseId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="class_type_id" property="classTypeId" jdbcType="BIGINT" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="read_count" property="readCount" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="classCount" property="classCount" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    base_id, title, type, class_type_id, count, read_count, status, create_id, create_time, customer_id
+  </sql>
+
+  <sql id="Column_List" >
+    ba.base_id, ba.title, ba.type, ba.class_type_id, ba.count, ba.read_count, ba.status, ba.create_id, ba.create_time, ba.customer_id
+  </sql>
+
+  <sql id="pageWhere">
+    <where>
+      <if test="title != null and title != '' ">
+        and ba.title like '%${title}%'
+      </if>
+      <if test="classTypeId != null">
+        and ba.class_type_id = #{classTypeId}
+      </if>
+      <if test="customerId != null and customerId != ''">
+        and ba.customer_id = #{customerId}
+      </if>
+      <if test="status != null">
+        and ba.status = #{status}
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectBaseAll" resultMap="BaseResultMap" parameterType="companyTrainBase" >
+    select
+    <include refid="Column_List" />,t.`name`
+    from ct_company_train_base ba
+    LEFT JOIN ct_company_train_exercises_type t
+    ON ba.class_type_id = t.class_type_id
+    <include refid="pageWhere"/>
+    ORDER BY ba.create_time DESC
+  </select>
+
+  <!-- 分页查询列表 -->
+  <select id="selectBaseListPage" resultMap="BaseResultMap" parameterType="companyTrainBase" >
+    select
+    <include refid="Column_List" />,t.`name`,
+    (select count(1) from ct_company_train_class_base ex
+    where  ex.base_id = ba.base_id) as classCount
+    from ct_company_train_base ba
+    LEFT JOIN ct_company_train_exercises_type t
+    ON ba.class_type_id = t.class_type_id
+    <include refid="pageWhere"/>
+    ORDER BY ba.create_time DESC
+  </select>
+
+  <select id="selectBaseById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Column_List" />,t.`name`
+    from ct_company_train_base ba
+    LEFT JOIN ct_company_train_exercises_type t
+    ON ba.class_type_id = t.class_type_id
+    where ba.base_id = #{baseId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectBaseByClassId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Column_List" />
+    from ct_company_train_base ba
+    LEFT JOIN ct_company_train_class_base cb
+    ON ba.base_id = cb.base_id
+    where cb.class_id = #{classId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectBaseClassByBaseId" resultType="java.lang.Integer" parameterType="java.lang.Long" >
+    select count(1)
+    from ct_company_train_class_base
+    where base_id = #{baseId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectBaseClassByClassId" resultType="companyTrainClassBase" parameterType="java.lang.Long" >
+    select *
+    from ct_company_train_class_base
+    where class_id = #{classId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectBaseExercisesByExercisesId" resultType="java.lang.Integer" parameterType="java.lang.Long" >
+    select count(1)
+    from ct_company_train_base_exercises
+    where exercises_id = #{exercisesId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteBaseById" parameterType="java.lang.Long" >
+    delete from ct_company_train_base
+    where base_id = #{baseId,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteBaseExercises" parameterType="java.lang.Long" >
+    delete from ct_company_train_base_exercises
+    where base_id = #{baseId,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteExercisesById" parameterType="java.lang.Long" >
+    delete from ct_company_train_base_exercises
+    where exercises_id = #{exercisesId,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteClassBase" parameterType="java.lang.Long" >
+    delete from ct_company_train_class_base
+    where class_id = #{classId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertBaseExercises" parameterType="companyTrainBaseExercises" >
+    insert into ct_company_train_base_exercises (exercises_id, base_id
+    )
+    values (#{exercisesId,jdbcType=BIGINT}, #{baseId,jdbcType=BIGINT}
+    )
+  </insert>
+
+  <insert id="insertClassBase" parameterType="companyTrainClassBase" >
+    insert into ct_company_train_class_base (class_id, base_id)
+    values (#{classId,jdbcType=BIGINT}, #{baseId,jdbcType=BIGINT})
+  </insert>
+
+  <insert id="insertBase" parameterType="companyTrainBase"  useGeneratedKeys="true" keyProperty="baseId">
+    insert into ct_company_train_base
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="classTypeId != null" >
+        class_type_id,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="readCount != null" >
+        read_count,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createId != null" >
+        create_id,
+      </if>
+        create_time,
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="classTypeId != null" >
+        #{classTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="readCount != null" >
+        #{readCount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+      </if>
+      sysdate(),
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateBase" parameterType="companyTrainBase" >
+    update ct_company_train_base
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="classTypeId != null" >
+        class_type_id = #{classTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="readCount != null" >
+        read_count = #{readCount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where base_id = #{baseId,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateClassBaseByClassId" parameterType="companyTrainClassBase" >
+    update ct_company_train_class_base
+    <set >
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=BIGINT},
+      </if>
+      <if test="baseId != null" >
+        base_id = #{baseId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where class_id = #{classId,jdbcType=BIGINT}
+  </update>
+</mapper>

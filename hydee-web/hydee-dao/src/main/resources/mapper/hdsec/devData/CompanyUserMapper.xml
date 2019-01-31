@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="companyUserMapper" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="companyUserMap" type="companyUser" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="user_password" property="userPassword" jdbcType="VARCHAR" />
+    <result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="owner" property="owner" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_id" property="createId" jdbcType="BIGINT" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+    <result column="modified_id" property="modifiedId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="login_ip" property="loginIp" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="verifi_code" property="verifiCode" jdbcType="VARCHAR" />
+    <result column="verifi_code_create_time" property="verifiCodeCreateTime" jdbcType="TIMESTAMP" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="ydj_token" property="ydjToken" jdbcType="VARCHAR" />
+    <result column="serve_charge" property="serveCharge" jdbcType="DOUBLE" />
+    <result column="serve_charge_percent" property="serveChargePercent" jdbcType="DOUBLE" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, role_id, user_name, real_name, user_password, user_phone, email, owner, customer_id,
+    last_login_time, create_time, create_id, modified_time, modified_id, status, login_ip, remark, 
+    verifi_code,verifi_code_create_time,ydj_token
+  </sql>
+  
+  <select id="selectByArgs" resultMap="companyUserMap" parameterType="companyUser" >
+    select 
+    <include refid="Base_Column_List" />
+    from ct_company_user where 1 = 1
+	<if test="userName != null and userName != ''">
+		and user_name = #{userName} 
+	</if>
+	<if test="email != null and email != ''">
+		and email = #{email}
+	</if>
+	<if test="id != null">
+		and id != #{id}
+	</if>
+  </select>
+
+  <!-- 药店家登录查询 -->
+  <select id="selectUserByParams" resultMap="companyUserMap" parameterType="java.util.Map">
+    SELECT u.*,org.org_name as company,
+    org.serve_charge as serveCharge,org.serve_charge_percent as serveChargePercent
+    from ct_company_user u
+    left join ct_company_organization org on u.customer_id = org.customer_id
+    where
+    1=1
+    <if test="userName != null and userName != '' ">
+      and u.user_name = #{userName}
+    </if>
+    <if test="userPassword != null and userPassword != '' ">
+      and u.user_password = #{userPassword}
+    </if>
+    <if test="ydjToken != null and ydjToken != '' ">
+      and u.ydj_token = #{ydjToken}
+    </if>
+    <if test="token != null and token != '' ">
+      and u.token = #{token}
+    </if>
+  </select>
+
+
+  <!-- 登陆查询用户 -->
+  <select id="selectUserByPassWord" resultMap="companyUserMap" parameterType="companyUser">
+    SELECT u.*,org.org_name as company,
+    org.serve_charge as serveCharge,org.serve_charge_percent as serveChargePercent
+    from ct_company_user u
+    left join ct_company_organization org on u.customer_id = org.customer_id 
+    where user_name = #{userName} and user_password = #{userPassword}
+  </select>
+
+  <delete id="deleteCompanyUserById" parameterType="java.lang.Long" >
+    delete from ct_company_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insertCompanyUser" parameterType="companyUser" >
+    insert into ct_company_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="realName != null" >
+        real_name,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="userPassword != null" >
+        user_password,
+      </if>
+      <if test="userPhone != null" >
+        user_phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="owner != null" >
+        owner,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="lastLoginTime != null" >
+        last_login_time,
+      </if>
+      <if test="createId != null" >
+        create_id,
+        create_time,
+      </if>
+      <if test="modifiedId != null" >
+        modified_id,
+        modified_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="loginIp != null" >
+        login_ip,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="verifiCode != null" >
+        verifi_code,
+      </if>
+      <if test="verifiCodeCreateTime != null" >
+        verifi_code_create_time,
+      </if>
+      <if test="token != null" >
+        token,
+      </if>
+      <if test="ydjToken != null" >
+        ydj_token,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null" >
+        #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null" >
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="owner != null" >
+        #{owner,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createId != null" >
+        #{createId,jdbcType=BIGINT},
+        sysdate(),
+      </if>
+      <if test="modifiedId != null" >
+        #{modifiedId,jdbcType=BIGINT},
+        sysdate(),
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="loginIp != null" >
+        #{loginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="verifiCode != null" >
+        #{verifiCode,jdbcType=VARCHAR},
+      </if>
+      <if test="verifiCodeCreateTime != null" >
+        #{verifiCodeCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="token != null" >
+        #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="ydjToken != null" >
+        #{ydjToken,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByCompanyUser" parameterType="companyUser" >
+    update ct_company_user
+    <set>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPassword != null" >
+        user_password = #{userPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null" >
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="owner != null" >
+        owner = #{owner,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null" >
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createId != null" >
+        create_id = #{createId,jdbcType=BIGINT},
+      </if>
+      <if test="modifiedId != null" >
+        modified_id = #{modifiedId,jdbcType=BIGINT},
+        modified_time = sysdate(),
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="loginIp != null" >
+        login_ip = #{loginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="verifiCode != null" >
+        verifi_code = #{verifiCode,jdbcType=VARCHAR},
+        verifi_code_create_time = now(),
+      </if>
+      <if test="ydjToken != null" >
+        ydj_token = #{ydjToken,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where
+    <choose>
+	    <when test="id != null">
+	    	id = #{id,jdbcType=BIGINT}
+	    </when>
+	    <when test="userName != null and userName != ''">
+	    	user_name = #{userName}
+	    </when>
+	    
+	    <otherwise>
+	    	1 != 1
+	    </otherwise>
+    </choose> 
+  </update>
+  
+  <select id="findUsefulVerifiCodeByUsername" parameterType="String" resultType="String">
+  	select verifi_code from ct_company_user where user_name = #{userName} and verifi_code_create_time is not null
+  	and (now() - verifi_code_create_time) &lt; 3600
+  </select>
+  
+  <select id="listByCreaterIdListPage" resultMap="companyUserMap" parameterType="companyUser">
+  	select u.id,u.user_name,u.real_name,u.owner,u.create_time,u.last_login_time,u.status,r.role_name,org.org_name as company,
+    org.serve_charge as serveCharge,org.serve_charge_percent as serveChargePercent
+  	from ct_company_user u 
+  	left join ct_company_organization org on u.customer_id = org.customer_id 
+  	left join ct_company_role r on u.role_id = r.role_id 
+  	where 
+  		u.create_id = #{createId} 
+  	<if test="keywords != null and keywords != ''">
+  		and org.org_name like '%${keywords}%'
+  	</if>
+  	group by u.id order by u.create_time desc
+  </select>
+  
+  <select id="selectById" resultMap="companyUserMap" parameterType="Long">
+  	select u.*,org.org_name as company,org.serve_charge as serveCharge,org.serve_charge_percent as serveChargePercent from ct_company_user u
+  	left join ct_company_organization org on u.customer_id = org.customer_id 
+  	where u.id = #{id}
+  </select>  
+  
+  <select id="findAdminByCustomerId" resultMap="companyUserMap" parameterType="String">
+  	select <include refid="Base_Column_List" /> from ct_company_user u 
+  	where u.customer_id = #{customerId} and u.create_id = 1
+  </select>
+</mapper>

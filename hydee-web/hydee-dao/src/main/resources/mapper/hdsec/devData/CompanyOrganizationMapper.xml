@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hydee.hdsec.dao.CompanyOrganizationDao" >
+  <!-- 配置二级缓存 -->
+  <!-- <cache type="com.hydee.hdsec.RedisCache" /> -->
+  <resultMap id="BaseResultMap" type="companyOrganization" >
+    <id column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="org_name" property="orgName" jdbcType="VARCHAR" />
+    <result column="org_img" property="orgImg" jdbcType="VARCHAR" />
+    <result column="org_paper_one" property="orgPaperOne" jdbcType="VARCHAR" />
+    <result column="org_paper_two" property="orgPaperTwo" jdbcType="VARCHAR" />
+    <result column="org_paper_three" property="orgPaperThree" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="org_url" property="orgUrl" jdbcType="VARCHAR" />
+    <result column="serve_charge" property="serveCharge" jdbcType="DOUBLE" />
+    <result column="serve_charge_percent" property="serveChargePercent" jdbcType="DOUBLE" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    customer_id, org_name, org_img, org_paper_one, org_paper_two, org_paper_three, address,
+    phone, org_url, serve_charge, serve_charge_percent
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from ct_company_organization
+    where customer_id = #{customerId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByOrgname" parameterType="companyOrganization" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" /> from ct_company_organization 
+  	where org_name = '${orgName}'
+  	<if test="customerId != null and customerId != ''">
+  	and customer_id != #{customerId}
+  	</if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ct_company_organization
+    where customer_id = #{customerId,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insertSelective" parameterType="companyOrganization" >
+    insert into ct_company_organization
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="orgName != null" >
+        org_name,
+      </if>
+      <if test="orgImg != null" >
+        org_img,
+      </if>
+      <if test="orgPaperOne != null" >
+        org_paper_one,
+      </if>
+      <if test="orgPaperTwo != null" >
+        org_paper_two,
+      </if>
+      <if test="orgPaperThree != null" >
+        org_paper_three,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="orgUrl != null" >
+        org_url,
+      </if>
+      <if test="serveCharge != null" >
+        serve_charge,
+      </if>
+      <if test="serveChargePercent != null" >
+        serve_charge_percent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null" >
+        #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgImg != null" >
+        #{orgImg,jdbcType=VARCHAR},
+      </if>
+      <if test="orgPaperOne != null" >
+        #{orgPaperOne,jdbcType=VARCHAR},
+      </if>
+      <if test="orgPaperTwo != null" >
+        #{orgPaperTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="orgPaperThree != null" >
+        #{orgPaperThree,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="orgUrl != null" >
+        #{orgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="serveCharge != null" >
+        #{serveCharge,jdbcType=DOUBLE},
+      </if>
+      <if test="serveChargePercent != null" >
+        #{serveChargePercent,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="companyOrganization" >
+    update ct_company_organization
+    <set >
+      <if test="orgName != null" >
+        org_name = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgImg != null" >
+        org_img = #{orgImg,jdbcType=VARCHAR},
+      </if>
+      <if test="orgPaperOne != null" >
+        org_paper_one = #{orgPaperOne,jdbcType=VARCHAR},
+      </if>
+      <if test="orgPaperTwo != null" >
+        org_paper_two = #{orgPaperTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="orgPaperThree != null" >
+        org_paper_three = #{orgPaperThree,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="orgUrl != null" >
+        org_url = #{orgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="serveCharge != null" >
+        serve_charge = #{serveCharge,jdbcType=DOUBLE},
+      </if>
+      <if test="serveChargePercent != null" >
+        serve_charge_percent = #{serveChargePercent,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where customer_id = #{customerId,jdbcType=VARCHAR}
+  </update>
+</mapper>

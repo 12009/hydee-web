@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.hydee.hdsec.sqlDao.MembershipSysDao">
+
+	<insert id="setPoints" parameterType="expVal" useGeneratedKeys="false">
+	    declare @points int
+   	    select @points=cvalue from c_system_config where ckey =#{type}
+   	    <if test="type!='pointsval_draw_cost' and type!='pointsval_draw_point1' and type!='pointsval_draw_point2'">
+   		if not exists (select null from u_points_list where 
+   		               customer_id =#{customerId} and user_id = #{userId} and type =#{type} 
+		    		   <if test="type=='pointsval_ult_checkin_ranking1' or type=='pointsval_ult_checkin_ranking2' or type=='pointsval_ult_checkin_ranking3'">
+		    		       and convert(varchar(7),get_date_time,120) = convert(varchar(7),getdate(),120)
+		    		   </if>
+		    		   <if test="type!='pointsval_ult_checkin_ranking1' and type!='pointsval_ult_checkin_ranking2' and type!='pointsval_ult_checkin_ranking3' and type!='pointsval_share_comments'">
+		    		       and get_date_time &gt;= convert(varchar(10),getdate(),120)
+		    		   </if>
+		    		   <if test="type=='pointsval_share_comments'">
+		    		       and 1=2
+		    		   </if>
+   		              )
+   		</if>
+   		    begin
+	    		insert into u_points_list(id,customer_id,user_id,type,val) values(replace(newid(), '-', ''),#{customerId},#{userId},#{type},@points)
+	    		update c_mobile_user set integral=(integral + @points) where customer_id =#{customerId} and user_id =#{userId}
+   		    end
+	</insert>
+	
+</mapper>
